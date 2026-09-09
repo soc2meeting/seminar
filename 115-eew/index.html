@@ -222,11 +222,40 @@
         .info-list li { margin-bottom: 15px; display: flex; font-size: 1.15em; border-bottom: 1px dashed #e2e8f0; padding-bottom: 12px; }
         .info-list span.label { font-weight: bold; color: var(--primary-blue); width: 110px; flex-shrink: 0; }
 
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 1.1em; }
-        th, td { padding: 15px; text-align: center; border: 1px solid #e2e8f0; }
-        th { background-color: var(--light-blue); color: var(--primary-blue); font-weight: bold; }
-        table th:first-child, table td:first-child { white-space: nowrap; width: 25%; }
-        .table-section-title { background-color: #fff7ed; color: var(--accent-orange); font-weight: bold; text-align: center; }
+        /* 💡 表格與議程排版優化 */
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 15px; 
+            font-size: 1.1em; 
+            table-layout: fixed; /* 💡 加入這行：強制表格乖乖聽從我們設定的寬度比例 */
+        }
+        
+        th, td { 
+            padding: 15px; 
+            text-align: center; 
+            border: 1px solid #e2e8f0; 
+            line-height: 1.6;
+        }
+        
+        th { 
+            background-color: var(--light-blue); 
+            color: var(--primary-blue); 
+            font-weight: bold; 
+        }
+        
+        /* 💡 精準控制時間欄位的寬度 */
+        table th:first-child, table td:first-child { 
+            white-space: nowrap; 
+            width: 180px; /* 將寬度固定在剛好能容納時間的完美尺寸 */
+        }
+        
+        .table-section-title { 
+            background-color: #fff7ed; 
+            color: var(--accent-orange); 
+            font-weight: bold; 
+            text-align: center; 
+        }
 
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; font-weight: bold; color: var(--text-main); font-size: 1.05em; }
