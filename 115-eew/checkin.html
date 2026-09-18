@@ -33,7 +33,6 @@
         
         input.search-input { width: 100%; padding: 12px; font-size: 16px; box-sizing: border-box; border: 1px solid #cbd5e1; border-radius: 6px; margin-bottom: 10px; }
         
-        /* 隱藏的掃描槍輸入框 */
         #gunInput { opacity: 0; position: absolute; top: -9999px; }
         .scanner-status { display: inline-block; padding: 8px 15px; border-radius: 20px; font-weight: bold; margin-bottom: 15px; }
         .status-ready { background: #dcfce7; color: var(--success); }
@@ -50,12 +49,15 @@
         td { padding: 12px 15px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
         tr:hover { background-color: #f8fafc; }
         .badge-success { background: #dcfce7; color: var(--success); padding: 4px 8px; border-radius: 4px; font-size: 0.9em; font-weight: bold; }
-        .badge-pending { background: #f1f5f9; color: #64748b; padding: 4px 8px; border-radius: 4px; font-size: 0.9em; }
+        
+        /* 💡 新增手動報到按鈕樣式 */
+        .btn-checkin-manual { background: var(--primary); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.9em; font-weight: bold; transition: 0.2s; }
+        .btn-checkin-manual:hover { background: #0369a1; }
         
         .meal-toggle { cursor: pointer; padding: 4px 8px; border-radius: 4px; border: 1px solid #cbd5e1; background: white; font-size: 0.9em; transition: 0.2s; }
         .meal-active { background: var(--warning); color: white; border-color: var(--warning); font-weight: bold; }
 
-        /* 彈出視窗 */
+        /* 彈出視窗共用樣式 */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
         .modal-box { background: white; padding: 30px 40px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; max-width: 450px; width: 90%; }
         .modal-box h2 { font-size: 2.2em; margin-top: 0; margin-bottom: 10px; }
@@ -113,7 +115,7 @@
                 
                 <div id="reader" style="width: 100%; margin-top: 15px; display: none; overflow: hidden; border-radius: 8px;"></div>
                 
-                <!-- 💡 隱藏的實體掃描槍接收框 (加入 inputmode="none" 避免跳出虛擬鍵盤) -->
+                <!-- 隱藏的實體掃描槍接收框 -->
                 <input type="text" id="gunInput" autocomplete="off" inputmode="none">
             </div>
 
@@ -166,6 +168,24 @@
         </div>
     </div>
 
+    <!-- 💡 新增：手動核對電話專用彈窗 -->
+    <div class="modal-overlay" id="manualModal">
+        <div class="modal-box">
+            <h2 style="color: var(--primary); font-size: 1.8em;">手動報到核對</h2>
+            <p>請核對 <strong id="manualTargetName" style="font-size: 1.2em; color: var(--warning);"></strong> 的資料</p>
+            
+            <div style="text-align: left; background: #f1f5f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
+                <p style="margin: 0 0 10px 0; color: #334155; font-weight: bold;">請對方念出聯絡電話：</p>
+                <input type="tel" id="manualPhoneInput" style="width: 100%; padding: 12px; font-size: 1.2em; border: 2px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; text-align: center; letter-spacing: 2px;" placeholder="請輸入完整電話 或 後 3 碼">
+            </div>
+            
+            <div style="display: flex; gap: 10px;">
+                <button class="btn" style="background: #64748b; flex: 1;" onclick="closeManualModal()">取消</button>
+                <button class="btn" style="flex: 2;" onclick="verifyManualPhone()">確認報到</button>
+            </div>
+        </div>
+    </div>
+
     <script>
         // 🚨 請確認這裡是否為您最新部署的 GAS 網址
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbwyFs9I2P3Wr03ui3zDcgB1HPeanB6DTJhe4zoQkO1fORHjwsefQ049jSC650kVu8Q7/exec'; 
@@ -175,6 +195,10 @@
         let isProcessing = false;
         let html5QrCode = null;
         let currentTab = 'checkedin'; 
+        
+        // 手動報到專用變數
+        let manualTargetId = '';
+        let manualTargetPhone = '';
 
         // --- 1. 自動登入與 LocalStorage ---
         window.onload = function() {
@@ -233,7 +257,9 @@
         function maintainGunFocus() {
             gunInput.focus();
             document.addEventListener('click', (e) => {
-                if (e.target.id !== 'searchInput' && !document.getElementById('resultModal').style.display.includes('flex')) {
+                const isSearching = e.target.id === 'searchInput' || e.target.id === 'manualPhoneInput';
+                const isModalOpen = document.getElementById('resultModal').style.display.includes('flex') || document.getElementById('manualModal').style.display.includes('flex');
+                if (!isSearching && !isModalOpen) {
                     gunInput.focus();
                 }
             });
@@ -270,7 +296,6 @@
                 { facingMode: "environment" },
                 { fps: 10, qrbox: { width: 250, height: 250 } },
                 (decodedText) => {
-                    // 💡 單純利用 isProcessing 控制，不使用 pause() 以免當機
                     if(!isProcessing) {
                         processCheckin(decodedText);
                     }
@@ -282,7 +307,6 @@
             });
         }
 
-        // 💡 實作關閉鏡頭釋放資源
         function stopCamera() {
             if (html5QrCode) {
                 html5QrCode.stop().then(() => {
@@ -298,7 +322,7 @@
         // --- 4. 處理報到核心邏輯 ---
         function processCheckin(qrId) {
             if (isProcessing) return;
-            isProcessing = true; // 鎖定狀態，直到彈窗被關閉前不接受新掃描
+            isProcessing = true; 
             
             showModal('🔄', '處理中...', `正在驗證...`, '...', '...', '...', '#64748b');
             document.getElementById('modalBtn').style.display = 'none';
@@ -315,18 +339,15 @@
                 if (res.status === 'success') {
                     playSound('success');
                     showModal('✅', '報到成功', '', res.name, res.org, res.title, 'var(--success)');
-                    // 💡 動態修改按鈕文字
                     modalBtn.textContent = '確認發放餐券並關閉';
                     updateLocalList(res.id, '已報到', res.time, res.meal);
                 } else if (res.status === 'warning') {
                     playSound('error');
                     showModal('⚠️', '重複報到', res.message, res.name, res.org, res.title, 'var(--warning)');
-                    // 💡 已報到過，修改按鈕文字避免誤會
                     modalBtn.textContent = '關閉 / 返回掃描';
                 } else {
                     playSound('error');
                     showModal('❌', '錯誤', res.message, '未知人員', '無', '無', 'var(--danger)');
-                    // 💡 錯誤情況，修改按鈕文字
                     modalBtn.textContent = '關閉 / 返回掃描';
                 }
             }).catch(err => {
@@ -350,12 +371,60 @@
 
         function closeModal() {
             document.getElementById('resultModal').style.display = 'none';
-            // 💡 關閉彈窗時釋放處理鎖，允許讀取下一個條碼
             isProcessing = false; 
             gunInput.focus();
         }
 
-        // --- 5. 名單切換與渲染邏輯 ---
+        // --- 5. 手動報到核對電話邏輯 ---
+        function promptManualCheckin(id) {
+            const person = participantList.find(p => p.id === id);
+            if (!person) return;
+            
+            manualTargetId = person.id;
+            manualTargetPhone = person.phone.replace(/\D/g, ''); // 移除所有非數字字元
+            
+            document.getElementById('manualTargetName').textContent = person.name;
+            const phoneInput = document.getElementById('manualPhoneInput');
+            phoneInput.value = '';
+            
+            document.getElementById('manualModal').style.display = 'flex';
+            setTimeout(() => phoneInput.focus(), 100);
+        }
+        
+        function closeManualModal() {
+            document.getElementById('manualModal').style.display = 'none';
+            gunInput.focus();
+        }
+        
+        // 允許按 Enter 鍵確認電話
+        document.getElementById('manualPhoneInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') verifyManualPhone();
+        });
+
+        function verifyManualPhone() {
+            const inputPhone = document.getElementById('manualPhoneInput').value.replace(/\D/g, '');
+            if (!inputPhone) {
+                alert('請輸入電話號碼！');
+                return;
+            }
+            
+            // 驗證規則：輸入完整電話，或是至少輸入 3 碼且與原電話末尾吻合
+            if (manualTargetPhone === inputPhone || (inputPhone.length >= 3 && manualTargetPhone.endsWith(inputPhone))) {
+                closeManualModal();
+                processCheckin(manualTargetId); // 驗證成功，直接轉拋原有的報到流程 (發送API)
+            } else {
+                alert('❌ 電話號碼核對失敗，請重新確認！');
+            }
+        }
+
+        // 💡 隱碼函數：保護隱私，只顯示前後碼
+        function maskPhone(phone) {
+            if (!phone || phone.length < 4) return phone;
+            if (phone.length === 10) return phone.substring(0, 4) + '***' + phone.substring(7);
+            return phone.substring(0, phone.length - 3) + '***';
+        }
+
+        // --- 6. 名單切換與渲染邏輯 ---
         function switchTab(tab) {
             currentTab = tab;
             document.getElementById('tab-checkedin').className = tab === 'checkedin' ? 'tab-btn active' : 'tab-btn';
@@ -388,14 +457,15 @@
 
             sortedList.forEach(p => {
                 if (p.status === '已報到') checkedIn++;
-                
                 if (currentTab === 'checkedin' && p.status !== '已報到') return;
 
+                // 搜尋依舊使用完整的真實電話 (p.phone) 來比對
                 if (filterText && !p.name.includes(filterText) && !p.phone.includes(filterText)) return;
 
+                // 💡 如果尚未報到，顯示手動報到按鈕
                 const statusHtml = p.status === '已報到' 
                     ? `<span class="badge-success">✅ 已報到</span>` 
-                    : `<span class="badge-pending">未報到</span>`;
+                    : `<button class="btn-checkin-manual" onclick="promptManualCheckin('${p.id}')">手動報到</button>`;
                 
                 const mealActive = p.meal === '已發放' ? 'meal-active' : '';
                 const mealHtml = p.status === '已報到'
@@ -405,7 +475,7 @@
                 const tr = document.createElement('tr');
                 tr.innerHTML = `
                     <td>${statusHtml}</td>
-                    <td><strong style="color:var(--primary);">${p.name}</strong><br><span style="font-size:0.8em;color:#64748b;">${p.phone}</span></td>
+                    <td><strong style="color:var(--primary);">${p.name}</strong><br><span style="font-size:0.8em;color:#64748b;">${maskPhone(p.phone)}</span></td>
                     <td>${p.org}<br><span style="font-size:0.9em;color:#64748b;">${p.title}</span></td>
                     <td style="color:#64748b;">${p.time || '-'}</td>
                     <td>${mealHtml}</td>
