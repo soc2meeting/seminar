@@ -222,67 +222,56 @@
         .info-list li { margin-bottom: 15px; display: flex; font-size: 1.15em; border-bottom: 1px dashed #e2e8f0; padding-bottom: 12px; }
         .info-list span.label { font-weight: bold; color: var(--primary-blue); width: 110px; flex-shrink: 0; }
 
-        /* 💡 專業議程表排版 (Timeline Style) */
+        /* 💡 結構化網格議程表 (Grid Style - 參考圖片三) */
         .agenda-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 15px;
-            font-size: 1.1em;
+            font-size: 1.15em;
             background: #ffffff;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+            border: 2px solid #0284c7; /* 外層粗邊框，增加沉穩感 */
         }
         
         .agenda-table th {
-            background-color: var(--light-blue);
-            color: var(--primary-blue);
+            background-color: #0284c7; /* 實心標題列 */
+            color: #ffffff;
             font-weight: bold;
-            padding: 18px 15px;
+            padding: 16px;
             text-align: center;
+            border: 1px solid #0284c7;
+            letter-spacing: 2px;
         }
         
         .agenda-table td {
-            padding: 22px 15px; /* 上下加寬，讓畫面更有呼吸感 */
-            border-bottom: 1px solid #f1f5f9;
-            line-height: 1.6;
-            vertical-align: top; /* 確保文字從上方開始對齊 */
-        }
-        
-        /* 💡 日程表的時間欄位 (左側) */
-        .agenda-table td:first-child {
-            width: 160px;
-            text-align: right; /* 時間向中軸線靠攏 */
-            padding-right: 25px;
-            font-weight: bold;
-            color: var(--primary-blue);
-            border-right: 3px solid var(--light-blue); /* 畫出垂直的中軸線 */
-        }
-        
-        /* 💡 日程表的流程欄位 (右側) */
-        .agenda-table td:last-child {
-            text-align: left;
-            padding-left: 30px; /* 給予固定的舒適留白 */
+            padding: 15px 20px;
+            text-align: center; /* 💡 內容全面置中，解決重心偏左問題 */
+            border: 1px solid #cbd5e1; /* 清晰的內網格線 */
             color: #334155;
+            vertical-align: middle;
+            line-height: 1.6;
         }
         
-        /* 跨欄的 Section 標題 */
-        .agenda-table td.table-section-title {
-            background-color: #fff7ed;
-            color: var(--accent-orange);
+        /* 時間欄位獨立底色，與內容區分 */
+        .agenda-table td:first-child {
+            width: 25%;
             font-weight: bold;
-            text-align: center;
-            border-right: none; 
-            padding: 15px;
-            letter-spacing: 1px;
+            color: #0369a1;
+            background-color: #f0f9ff;
         }
         
-        /* 講者/備註專用小字 */
-        .agenda-subtext {
-            font-size: 0.9em;
-            color: #64748b;
-            margin-top: 6px;
-            display: block;
+        /* 跨欄的 Section 標題 (深灰色底+白字，更具份量感) */
+        .agenda-table td.section-header {
+            background-color: #64748b;
+            color: #ffffff;
+            font-weight: bold;
+            padding: 14px;
+            letter-spacing: 1px;
+            width: auto;
+        }
+        
+        /* 橘色強調文字 */
+        .text-orange {
+            color: #ea580c;
         }
         
         .table-section-title { 
@@ -464,56 +453,71 @@
                 <tbody>
                     <tr>
                         <td>13:00 ~ 13:40</td>
-                        <td>報到 Registration</td>
+                        <td><strong>報到 Registration</strong></td>
                     </tr>
                     <tr>
-                        <!-- 💡 取消 rowspan，改在同一個儲存格內用虛線排版，確保對齊完美 -->
                         <td>13:40 ~ 13:55</td>
                         <td>
-                            <strong style="color: #0c4a6e;">開幕 Opening Ceremony</strong>
-                            <span class="agenda-subtext">主席致詞：地震測報中心 吳健富主任</span>
-                            
-                            <hr style="border: 0; border-top: 1px dashed #e2e8f0; margin: 15px 0 12px 0;">
-                            
-                            <strong style="color: #0c4a6e;">來賓致詞</strong>
-                            <span class="agenda-subtext">講者待確認</span>
+                            <strong>開幕 Opening Ceremony</strong><br>
+                            <span style="font-size: 0.95em;">主席致詞：地震測報中心 吳健富主任</span><br>
+                            <span class="text-orange" style="font-size: 0.95em;">來賓致詞：待確認</span>
                         </td>
                     </tr>
                     <tr>
                         <td>13:55 ~ 14:10</td>
-                        <td>中央氣象署地震測報中心</td>
+                        <td><strong>中央氣象署地震測報中心</strong></td>
                     </tr>
                     
                     <tr>
-                        <td colspan="2" class="table-section-title">Section 1 地震資訊傳遞服務成果展示</td>
+                        <td colspan="2" class="section-header">Section 1 地震資訊傳遞服務成果展示 主持人：蕭乃祺 副主任</td>
                     </tr>
                     
                     <tr>
-                        <td>14:10 ~ 15:10</td>
-                        <td>
-                            <strong style="color: #0c4a6e;">專題演講 (多場次)</strong>
-                            <span class="agenda-subtext">講者與講題待確認</span>
-                        </td>
+                        <td>14:10 ~ 14:25</td>
+                        <td class="text-orange">講者待確認</td>
                     </tr>
+                    <tr>
+                        <td>14:25 ~ 14:40</td>
+                        <td class="text-orange">講者待確認</td>
+                    </tr>
+                    <tr>
+                        <td>14:40 ~ 14:55</td>
+                        <td class="text-orange">講者待確認</td>
+                    </tr>
+                    <tr>
+                        <td>14:55 ~ 15:10</td>
+                        <td class="text-orange">講者待確認</td>
+                    </tr>
+                    
                     <tr>
                         <td>15:10 ~ 15:50</td>
-                        <td>交流時間 Coffee break</td>
+                        <td><strong>交流時間 Coffee break</strong></td>
                     </tr>
                     
                     <tr>
-                        <td colspan="2" class="table-section-title">Section 2 地震資訊傳遞服務成果展示</td>
+                        <td colspan="2" class="section-header">Section 2 地震資訊傳遞服務成果展示 主持人：許麗文 副主任</td>
                     </tr>
                     
                     <tr>
-                        <td>15:50 ~ 16:50</td>
-                        <td>
-                            <strong style="color: #0c4a6e;">專題演講 (多場次)</strong>
-                            <span class="agenda-subtext">講者與講題待確認</span>
-                        </td>
+                        <td>15:50 ~ 16:05</td>
+                        <td class="text-orange">講者待確認</td>
                     </tr>
+                    <tr>
+                        <td>16:05 ~ 16:20</td>
+                        <td class="text-orange">講者待確認</td>
+                    </tr>
+                    <tr>
+                        <td>16:20 ~ 16:35</td>
+                        <td class="text-orange">講者待確認</td>
+                    </tr>
+                    <tr>
+                        <td>16:35 ~ 16:50</td>
+                        <td class="text-orange">講者待確認</td>
+                    </tr>
+                    
                     <tr>
                         <td>17:00 ~</td>
-                        <td>交流會結束</td>
+                        <td><strong>交流會結束</strong></td>
                     </tr>
                 </tbody>
             </table>
