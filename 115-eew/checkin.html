@@ -107,11 +107,14 @@
                 
                 <hr style="border: 0; border-top: 1px dashed #cbd5e1; margin: 15px 0;">
                 
+                <!-- 鏡頭控制按鈕 -->
                 <button class="btn" id="cameraBtn" onclick="startCamera()" style="background: #475569; width: 100%;">📷 開啟手機鏡頭掃描</button>
+                <button class="btn" id="stopCameraBtn" onclick="stopCamera()" style="background: #dc2626; width: 100%; display: none;">❌ 關閉手機鏡頭</button>
+                
                 <div id="reader" style="width: 100%; margin-top: 15px; display: none; overflow: hidden; border-radius: 8px;"></div>
                 
-                <!-- 隱藏的實體掃描槍接收框 -->
-                <input type="text" id="gunInput" autocomplete="off">
+                <!-- 💡 隱藏的實體掃描槍接收框 (加入 inputmode="none" 避免跳出虛擬鍵盤) -->
+                <input type="text" id="gunInput" autocomplete="off" inputmode="none">
             </div>
 
             <!-- 手動搜尋區 -->
@@ -124,7 +127,6 @@
 
         <!-- 名單區 -->
         <div class="table-container">
-            <!-- 💡 新增的頁籤區塊 -->
             <div class="tab-group">
                 <button class="tab-btn active" id="tab-checkedin" onclick="switchTab('checkedin')">✅ 僅顯示已報到</button>
                 <button class="tab-btn" id="tab-all" onclick="switchTab('all')">📋 完整報名清單</button>
@@ -171,8 +173,8 @@
         let participantList = [];
         let passcode = '';
         let isProcessing = false;
-        let html5QrCode = null; // 改用底層 API
-        let currentTab = 'checkedin'; // 預設顯示已報到
+        let html5QrCode = null;
+        let currentTab = 'checkedin'; 
 
         // --- 1. 自動登入與 LocalStorage ---
         window.onload = function() {
@@ -206,7 +208,7 @@
                 if (res.status === 'success') {
                     passcode = input;
                     participantList = res.list;
-                    localStorage.setItem('eew_kiosk_pass', input); // 記住密碼
+                    localStorage.setItem('eew_kiosk_pass', input); 
                     
                     document.getElementById('loginScreen').style.display = 'none';
                     document.getElementById('dashboard').style.display = 'block';
@@ -214,7 +216,7 @@
                     maintainGunFocus(); 
                 } else {
                     alert(res.message);
-                    localStorage.removeItem('eew_kiosk_pass'); // 密碼錯誤則清除
+                    localStorage.removeItem('eew_kiosk_pass'); 
                     btn.disabled = false; btn.textContent = '解鎖進入';
                     document.getElementById('passcodeInput').value = '';
                 }
@@ -254,37 +256,49 @@
             }
         });
 
-        // --- 3. 手機相機掃描邏輯 (修改為直接調用鏡頭) ---
+        // --- 3. 手機相機掃描邏輯 ---
         function startCamera() {
             document.getElementById('cameraBtn').style.display = 'none';
+            document.getElementById('stopCameraBtn').style.display = 'block';
             document.getElementById('reader').style.display = 'block';
 
             if (!html5QrCode) {
                 html5QrCode = new Html5Qrcode("reader");
             }
             
-            // 直接請求後置鏡頭
             html5QrCode.start(
                 { facingMode: "environment" },
                 { fps: 10, qrbox: { width: 250, height: 250 } },
                 (decodedText) => {
+                    // 💡 單純利用 isProcessing 控制，不使用 pause() 以免當機
                     if(!isProcessing) {
-                        html5QrCode.pause(); // 掃到後暫停鏡頭
                         processCheckin(decodedText);
                     }
                 },
                 (errorMessage) => { /* 忽略不符合的畫面 */ }
             ).catch((err) => {
                 alert("無法啟動相機！請確認您的瀏覽器允許存取相機權限。");
-                document.getElementById('cameraBtn').style.display = 'block';
-                document.getElementById('reader').style.display = 'none';
+                stopCamera();
             });
+        }
+
+        // 💡 實作關閉鏡頭釋放資源
+        function stopCamera() {
+            if (html5QrCode) {
+                html5QrCode.stop().then(() => {
+                    document.getElementById('cameraBtn').style.display = 'block';
+                    document.getElementById('stopCameraBtn').style.display = 'none';
+                    document.getElementById('reader').style.display = 'none';
+                }).catch(err => {
+                    console.error("停止相機時發生錯誤", err);
+                });
+            }
         }
 
         // --- 4. 處理報到核心邏輯 ---
         function processCheckin(qrId) {
             if (isProcessing) return;
-            isProcessing = true;
+            isProcessing = true; // 鎖定狀態，直到彈窗被關閉前不接受新掃描
             
             showModal('🔄', '處理中...', `正在驗證...`, '...', '...', '...', '#64748b');
             document.getElementById('modalBtn').style.display = 'none';
@@ -294,22 +308,32 @@
                 body: JSON.stringify({ action: 'kioskCheckin', pass: passcode, id: qrId }),
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' }
             }).then(res => res.json()).then(res => {
-                document.getElementById('modalBtn').style.display = 'block';
+                
+                const modalBtn = document.getElementById('modalBtn');
+                modalBtn.style.display = 'block';
+                
                 if (res.status === 'success') {
                     playSound('success');
                     showModal('✅', '報到成功', '', res.name, res.org, res.title, 'var(--success)');
+                    // 💡 動態修改按鈕文字
+                    modalBtn.textContent = '確認發放餐券並關閉';
                     updateLocalList(res.id, '已報到', res.time, res.meal);
                 } else if (res.status === 'warning') {
                     playSound('error');
                     showModal('⚠️', '重複報到', res.message, res.name, res.org, res.title, 'var(--warning)');
+                    // 💡 已報到過，修改按鈕文字避免誤會
+                    modalBtn.textContent = '關閉 / 返回掃描';
                 } else {
                     playSound('error');
                     showModal('❌', '錯誤', res.message, '未知人員', '無', '無', 'var(--danger)');
+                    // 💡 錯誤情況，修改按鈕文字
+                    modalBtn.textContent = '關閉 / 返回掃描';
                 }
             }).catch(err => {
                 playSound('error');
                 showModal('❌', '連線失敗', '請確認網路狀態後再試', '-', '-', '-', 'var(--danger)');
                 document.getElementById('modalBtn').style.display = 'block';
+                document.getElementById('modalBtn').textContent = '關閉 / 返回掃描';
             });
         }
 
@@ -326,11 +350,9 @@
 
         function closeModal() {
             document.getElementById('resultModal').style.display = 'none';
-            isProcessing = false;
+            // 💡 關閉彈窗時釋放處理鎖，允許讀取下一個條碼
+            isProcessing = false; 
             gunInput.focus();
-            if (html5QrCode && html5QrCode.getState() === 2) { // 2 = PAUSED
-                html5QrCode.resume(); // 恢復鏡頭
-            }
         }
 
         // --- 5. 名單切換與渲染邏輯 ---
@@ -367,10 +389,8 @@
             sortedList.forEach(p => {
                 if (p.status === '已報到') checkedIn++;
                 
-                // 💡 分頁過濾：如果目前在「僅顯示已報到」分頁，且該人員未報到，則跳過不顯示
                 if (currentTab === 'checkedin' && p.status !== '已報到') return;
 
-                // 搜尋過濾
                 if (filterText && !p.name.includes(filterText) && !p.phone.includes(filterText)) return;
 
                 const statusHtml = p.status === '已報到' 
