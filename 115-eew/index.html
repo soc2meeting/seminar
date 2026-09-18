@@ -256,6 +256,24 @@
             font-weight: bold; 
             text-align: center; 
         }
+        /* 💡 精準控制時間欄位的寬度 */
+        table th:first-child, table td:first-child { 
+            white-space: nowrap; 
+            width: 180px; 
+        }
+        
+        /* 💡 新增：針對流程內容設定靠左對齊與舒適的左側留白 */
+        .text-left {
+            text-align: left !important;
+            padding-left: 12% !important; 
+        }
+        
+        .table-section-title { 
+            background-color: #fff7ed; 
+            color: var(--accent-orange); 
+            font-weight: bold; 
+            text-align: center; 
+        }
 
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; font-weight: bold; color: var(--text-main); font-size: 1.05em; }
@@ -421,17 +439,17 @@
             </div>
             <table>
                 <thead><tr><th>時間</th><th>流程</th></tr></thead>
-                <tbody>
-                    <tr><td>13:00 ~ 13:40</td><td>報到 Registration</td></tr>
-                    <tr><td rowspan="2">13:40 ~ 13:55</td><td>開幕 Opening Ceremony<br><span style="font-size:0.9em; color:var(--text-muted);">主席致詞：地震測報中心 吳健富主任</span></td></tr>
-                    <tr><td>來賓致詞：待確認</td></tr>
-                    <tr><td>13:55 ~ 14:10</td><td>中央氣象署地震測報中心</td></tr>
+               <tbody>
+                    <tr><td>13:00 ~ 13:40</td><td class="text-left">報到 Registration</td></tr>
+                    <tr><td rowspan="2">13:40 ~ 13:55</td><td class="text-left">開幕 Opening Ceremony<br><span style="font-size:0.9em; color:var(--text-muted);">主席致詞：地震測報中心 吳健富主任</span></td></tr>
+                    <tr><td class="text-left">來賓致詞：待確認</td></tr>
+                    <tr><td>13:55 ~ 14:10</td><td class="text-left">中央氣象署地震測報中心</td></tr>
                     <tr><td colspan="2" class="table-section-title">Section 1 地震資訊傳遞服務成果展示</td></tr>
-                    <tr><td>14:10 ~ 15:10</td><td>講者待確認 (多場次)</td></tr>
-                    <tr><td>15:10 ~ 15:50</td><td>交流時間 Coffee break</td></tr>
+                    <tr><td>14:10 ~ 15:10</td><td class="text-left">講者待確認 (多場次)</td></tr>
+                    <tr><td>15:10 ~ 15:50</td><td class="text-left">交流時間 Coffee break</td></tr>
                     <tr><td colspan="2" class="table-section-title">Section 2 地震資訊傳遞服務成果展示</td></tr>
-                    <tr><td>15:50 ~ 16:50</td><td>講者待確認 (多場次)</td></tr>
-                    <tr><td>17:00 ~</td><td>交流會結束</td></tr>
+                    <tr><td>15:50 ~ 16:50</td><td class="text-left">講者待確認 (多場次)</td></tr>
+                    <tr><td>17:00 ~</td><td class="text-left">交流會結束</td></tr>
                 </tbody>
             </table>
         </div>
