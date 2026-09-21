@@ -94,8 +94,12 @@
 
         /* 💡 來賓螢幕專屬樣式 */
         #guestScreen { display: none; height: 100vh; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); flex-direction: column; align-items: center; justify-content: center; text-align: center; font-family: '微軟正黑體', sans-serif; overflow: hidden; }
-        .guest-title { font-size: 4.5vw; color: var(--primary); margin-bottom: 10px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.05); }
-        .guest-subtitle { font-size: 2.5vw; color: #64748b; margin-top: 0; }
+        
+        /* 💡 新增：超大醒目的「報到台」字體樣式 */
+        .guest-massive-title { font-size: 12vw; color: #0284c7; font-weight: 900; letter-spacing: 2vw; margin: 0 0 10px 0; text-shadow: 4px 4px 10px rgba(0,0,0,0.1); padding-left: 2vw; /* 修正字距造成的偏移 */ }
+        
+        .guest-title { font-size: 4vw; color: #334155; margin-bottom: 15px; font-weight: bold; }
+        .guest-subtitle { font-size: 2.2vw; color: #64748b; margin-top: 0; background: white; padding: 10px 25px; border-radius: 50px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: inline-block; }
         
         #guestActive { display: none; background: white; padding: 50px 80px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); animation: fadeInScale 0.5s ease-out; border-top: 10px solid var(--primary); }
         .guest-status-icon { font-size: 8vw; margin-bottom: 10px; line-height: 1; }
@@ -112,8 +116,10 @@
     <div id="guestScreen">
         <!-- 待機畫面 -->
         <div id="guestDefault">
-            <h1 class="guest-title">115年EEW成果交流會</h1>
-            <h2 class="guest-subtitle">請向工作人員出示您的專屬 QR Code 或報上手機末 3 碼</h2>
+            <!-- 💡 醒目的報到台大字 -->
+            <h1 class="guest-massive-title">報到台</h1>
+            <h2 class="guest-title">115年合作推動地震資訊傳遞服務成果交流會</h2>
+            <h3 class="guest-subtitle">請向工作人員出示 QR Code 或報上手機末 3 碼</h3>
         </div>
         
         <!-- 報到成功/重複畫面 -->
@@ -192,7 +198,7 @@
                     <button class="tab-btn active" id="tab-checkedin" onclick="switchTab('checkedin')">✅ 僅顯示已報到</button>
                     <button class="tab-btn" id="tab-all" onclick="switchTab('all')">📋 完整報名清單</button>
                 </div>
-                <!-- 💡 新增的開啟來賓螢幕按鈕 -->
+                <!-- 開啟來賓螢幕按鈕 -->
                 <div style="display: flex; gap: 10px;">
                     <button class="btn" onclick="openGuestScreen()" style="padding: 8px 15px; font-size: 0.95em; background: #8b5cf6;">🖥️ 開啟來賓螢幕</button>
                     <button class="btn" id="refreshBtn" onclick="refreshData()" style="padding: 8px 15px; font-size: 0.95em; background: #10b981;">🔄 更新資料</button>
@@ -251,7 +257,6 @@
     </div>
 
     <script>
-        // 🚨 請確認這裡是否為您最新部署的 GAS 網址
         const GAS_URL = 'https://script.google.com/macros/s/AKfycbwyFs9I2P3Wr03ui3zDcgB1HPeanB6DTJhe4zoQkO1fORHjwsefQ049jSC650kVu8Q7/exec'; 
         
         let participantList = [];
@@ -264,16 +269,15 @@
         let manualTargetPhone = '';
         let guestTimeout = null;
 
-        // --- 1. 自動登入 / 來賓螢幕模式偵測 ---
+        // --- 自動登入 / 來賓螢幕模式偵測 ---
         window.onload = function() {
-            // 💡 偵測網址是否有 ?mode=guest
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('mode') === 'guest') {
                 document.getElementById('loginScreen').style.display = 'none';
                 document.getElementById('dashboard').style.display = 'none';
                 document.getElementById('guestScreen').style.display = 'flex';
                 initGuestScreenMode();
-                return; // 停止執行後續的工作人員邏輯
+                return;
             }
 
             const savedPass = localStorage.getItem('eew_kiosk_pass');
@@ -290,19 +294,16 @@
             }
         };
 
-        // --- 💡 來賓螢幕通訊邏輯 ---
+        // --- 來賓螢幕通訊邏輯 ---
         function openGuestScreen() {
-            // 開啟新視窗，帶入 mode=guest 參數，並設定預設大小
             window.open(window.location.pathname + '?mode=guest', 'EEW_Guest_Screen', 'width=1024,height=768');
         }
 
         function initGuestScreenMode() {
-            // 監聽來自工作人員頁面寫入 LocalStorage 的事件
             window.addEventListener('storage', (e) => {
                 if (e.key === 'eew_guest_data' && e.newValue) {
                     const data = JSON.parse(e.newValue);
                     
-                    // 填入資料
                     document.getElementById('guestDataName').textContent = data.name;
                     document.getElementById('guestDataOrg').textContent = data.org;
                     document.getElementById('guestDataTitle').textContent = data.title;
@@ -324,7 +325,6 @@
                         textEl.style.color = 'var(--warning)';
                         document.getElementById('guestActive').style.borderTopColor = 'var(--warning)';
                     } else {
-                        // 失敗/查無此人不顯示個資
                         iconEl.textContent = '❌';
                         iconEl.className = 'guest-status-icon';
                         textEl.textContent = '無效條碼，請洽工作人員';
@@ -336,11 +336,9 @@
                         document.getElementById('guestDataPhone').textContent = '---';
                     }
 
-                    // 切換顯示畫面
                     document.getElementById('guestDefault').style.display = 'none';
                     document.getElementById('guestActive').style.display = 'block';
 
-                    // 8 秒後自動還原為待機畫面
                     if (guestTimeout) clearTimeout(guestTimeout);
                     guestTimeout = setTimeout(() => {
                         document.getElementById('guestActive').style.display = 'none';
@@ -350,7 +348,6 @@
             });
         }
 
-        // 個資隱蔽函數 (王小明 -> 王○明，歐陽修 -> 歐○○修)
         function maskNameForGuest(name) {
             if (!name) return "---";
             if (name.length <= 1) return name;
@@ -359,10 +356,8 @@
             return name[0] + '○'.repeat(name.length - 2) + name[name.length - 1];
         }
 
-        // 推播資料給來賓螢幕
         function broadcastToGuest(status, id, rawName, org, title) {
             let phone = '';
-            // 從本地快取找電話
             const person = participantList.find(p => p.id === id || (p.id && p.id.replace("EEW-", "") === id));
             if (person) phone = person.phone;
 
@@ -372,7 +367,7 @@
                 org: org || '---',
                 title: title || '---',
                 phone: maskPhone(phone) || '---',
-                t: Date.now() // 加入時間戳，確保每次推播都會觸發 Storage 事件
+                t: Date.now() 
             };
             localStorage.setItem('eew_guest_data', JSON.stringify(payload));
         }
@@ -540,19 +535,16 @@
                     showModal('✅', '報到成功', '', res.name, res.org, res.title, 'var(--success)', 'success');
                     updateLocalList(res.id, '已報到', res.time, res.meal);
                     
-                    // 💡 推播給來賓螢幕
                     broadcastToGuest('success', res.id, res.name, res.org, res.title);
                 } else if (res.status === 'warning') {
                     playSound('error');
                     showModal('⚠️', '重複報到', res.message, res.name, res.org, res.title, 'var(--danger)', 'warning');
                     
-                    // 💡 推播給來賓螢幕
                     broadcastToGuest('warning', res.id, res.name, res.org, res.title);
                 } else {
                     playSound('error');
                     showModal('❌', '錯誤', res.message, '未知人員', '無', '無', 'var(--danger)', 'error');
                     
-                    // 💡 推播錯誤給來賓螢幕
                     broadcastToGuest('error', qrId, '', '', '');
                 }
             }).catch(err => {
