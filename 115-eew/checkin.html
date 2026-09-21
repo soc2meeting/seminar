@@ -25,7 +25,8 @@
         .header-stats { display: flex; justify-content: space-between; align-items: center; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); margin-bottom: 20px; flex-wrap: wrap; gap: 15px;}
         .stat-box { text-align: center; }
         .stat-num { font-size: 2em; font-weight: bold; color: var(--primary); }
-        .logout-btn { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.9em; margin-top: 10px; font-weight: bold; }
+        .logout-btn { background: #f1f5f9; color: #64748b; border: 1px solid #cbd5e1; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.9em; font-weight: bold; transition: 0.2s; }
+        .logout-btn:hover { background: #e2e8f0; }
 
         .action-panel { display: flex; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
         .scanner-card { flex: 1; background: white; padding: 20px; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: center; min-width: 300px; }
@@ -50,7 +51,7 @@
         tr:hover { background-color: #f8fafc; }
         .badge-success { background: #dcfce7; color: var(--success); padding: 4px 8px; border-radius: 4px; font-size: 0.9em; font-weight: bold; }
         
-        /* 💡 新增手動報到按鈕樣式 */
+        /* 手動報到按鈕樣式 */
         .btn-checkin-manual { background: var(--primary); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.9em; font-weight: bold; transition: 0.2s; }
         .btn-checkin-manual:hover { background: #0369a1; }
         
@@ -85,7 +86,11 @@
         <div class="header-stats">
             <div>
                 <h2 style="margin: 0; color: var(--primary);">📋 EEW 交流會報到台</h2>
-                <button class="logout-btn" onclick="logout()">登出系統</button>
+                <!-- 💡 新增更新資料按鈕與版面微調 -->
+                <div style="display: flex; gap: 10px; margin-top: 15px;">
+                    <button class="btn" id="refreshBtn" onclick="refreshData()" style="padding: 6px 12px; font-size: 0.9em; background: #10b981;">🔄 更新資料</button>
+                    <button class="logout-btn" onclick="logout()">登出系統</button>
+                </div>
             </div>
             <div style="display: flex; gap: 30px;">
                 <div class="stat-box">
@@ -168,7 +173,7 @@
         </div>
     </div>
 
-    <!-- 💡 新增：手動核對電話專用彈窗 -->
+    <!-- 手動核對電話專用彈窗 -->
     <div class="modal-overlay" id="manualModal">
         <div class="modal-box">
             <h2 style="color: var(--primary); font-size: 1.8em;">手動報到核對</h2>
@@ -200,17 +205,27 @@
         let manualTargetId = '';
         let manualTargetPhone = '';
 
-        // --- 1. 自動登入與 LocalStorage ---
+        // --- 1. 自動登入與 Session 期限管理 ---
         window.onload = function() {
             const savedPass = localStorage.getItem('eew_kiosk_pass');
-            if (savedPass) {
-                document.getElementById('passcodeInput').value = savedPass;
-                login();
+            const savedTime = localStorage.getItem('eew_kiosk_time'); // 取得登入時間
+            
+            if (savedPass && savedTime) {
+                const now = new Date().getTime();
+                // 💡 Session 期限設定：1 小時 (3600000 毫秒)
+                if (now - parseInt(savedTime) < 3600000) {
+                    document.getElementById('passcodeInput').value = savedPass;
+                    login();
+                } else {
+                    // 超過 1 小時，自動清除記憶並要求重新登入
+                    logout(); 
+                }
             }
         };
 
         function logout() {
             localStorage.removeItem('eew_kiosk_pass');
+            localStorage.removeItem('eew_kiosk_time');
             location.reload();
         }
 
@@ -232,7 +247,10 @@
                 if (res.status === 'success') {
                     passcode = input;
                     participantList = res.list;
+                    
+                    // 💡 登入成功，儲存密碼與當前時間戳記
                     localStorage.setItem('eew_kiosk_pass', input); 
+                    localStorage.setItem('eew_kiosk_time', new Date().getTime());
                     
                     document.getElementById('loginScreen').style.display = 'none';
                     document.getElementById('dashboard').style.display = 'block';
@@ -241,12 +259,45 @@
                 } else {
                     alert(res.message);
                     localStorage.removeItem('eew_kiosk_pass'); 
+                    localStorage.removeItem('eew_kiosk_time');
                     btn.disabled = false; btn.textContent = '解鎖進入';
                     document.getElementById('passcodeInput').value = '';
                 }
             }).catch(err => {
                 alert('網路異常，請重試！');
                 btn.disabled = false; btn.textContent = '解鎖進入';
+            });
+        }
+
+        // --- 1-1. 💡 新增手動更新資料功能 ---
+        function refreshData() {
+            if (!passcode) return;
+            const btn = document.getElementById('refreshBtn');
+            btn.disabled = true;
+            btn.textContent = '🔄 更新中...';
+
+            fetch(GAS_URL, {
+                method: 'POST',
+                body: JSON.stringify({ action: 'getKioskList', pass: passcode }),
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+            }).then(res => res.json()).then(res => {
+                if (res.status === 'success') {
+                    participantList = res.list;
+                    renderList(document.getElementById('searchInput').value.trim()); // 帶入目前的搜尋條件
+                    btn.textContent = '✅ 已更新';
+                } else {
+                    alert(res.message);
+                    btn.textContent = '❌ 更新失敗';
+                }
+                setTimeout(() => {
+                    btn.disabled = false;
+                    btn.textContent = '🔄 更新資料';
+                    gunInput.focus();
+                }, 1500);
+            }).catch(err => {
+                alert('網路異常，無法更新資料！');
+                btn.disabled = false;
+                btn.textContent = '🔄 更新資料';
             });
         }
 
@@ -259,7 +310,7 @@
             document.addEventListener('click', (e) => {
                 const isSearching = e.target.id === 'searchInput' || e.target.id === 'manualPhoneInput';
                 const isModalOpen = document.getElementById('resultModal').style.display.includes('flex') || document.getElementById('manualModal').style.display.includes('flex');
-                if (!isSearching && !isModalOpen) {
+                if (!isSearching && !isModalOpen && e.target.id !== 'refreshBtn') {
                     gunInput.focus();
                 }
             });
@@ -381,7 +432,7 @@
             if (!person) return;
             
             manualTargetId = person.id;
-            manualTargetPhone = person.phone.replace(/\D/g, ''); // 移除所有非數字字元
+            manualTargetPhone = person.phone.replace(/\D/g, ''); 
             
             document.getElementById('manualTargetName').textContent = person.name;
             const phoneInput = document.getElementById('manualPhoneInput');
@@ -396,7 +447,6 @@
             gunInput.focus();
         }
         
-        // 允許按 Enter 鍵確認電話
         document.getElementById('manualPhoneInput').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') verifyManualPhone();
         });
@@ -408,16 +458,14 @@
                 return;
             }
             
-            // 驗證規則：輸入完整電話，或是至少輸入 3 碼且與原電話末尾吻合
             if (manualTargetPhone === inputPhone || (inputPhone.length >= 3 && manualTargetPhone.endsWith(inputPhone))) {
                 closeManualModal();
-                processCheckin(manualTargetId); // 驗證成功，直接轉拋原有的報到流程 (發送API)
+                processCheckin(manualTargetId); 
             } else {
                 alert('❌ 電話號碼核對失敗，請重新確認！');
             }
         }
 
-        // 💡 隱碼函數：保護隱私，只顯示前後碼
         function maskPhone(phone) {
             if (!phone || phone.length < 4) return phone;
             if (phone.length === 10) return phone.substring(0, 4) + '***' + phone.substring(7);
@@ -459,10 +507,8 @@
                 if (p.status === '已報到') checkedIn++;
                 if (currentTab === 'checkedin' && p.status !== '已報到') return;
 
-                // 搜尋依舊使用完整的真實電話 (p.phone) 來比對
                 if (filterText && !p.name.includes(filterText) && !p.phone.includes(filterText)) return;
 
-                // 💡 如果尚未報到，顯示手動報到按鈕
                 const statusHtml = p.status === '已報到' 
                     ? `<span class="badge-success">✅ 已報到</span>` 
                     : `<button class="btn-checkin-manual" onclick="promptManualCheckin('${p.id}')">手動報到</button>`;
