@@ -95,8 +95,7 @@
         /* 💡 來賓螢幕專屬樣式 */
         #guestScreen { display: none; height: 100vh; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); flex-direction: column; align-items: center; justify-content: center; text-align: center; font-family: '微軟正黑體', sans-serif; overflow: hidden; }
         
-        /* 💡 新增：超大醒目的「報到台」字體樣式 */
-        .guest-massive-title { font-size: 12vw; color: #0284c7; font-weight: 900; letter-spacing: 2vw; margin: 0 0 10px 0; text-shadow: 4px 4px 10px rgba(0,0,0,0.1); padding-left: 2vw; /* 修正字距造成的偏移 */ }
+        .guest-massive-title { font-size: 12vw; color: #0284c7; font-weight: 900; letter-spacing: 2vw; margin: 0 0 10px 0; text-shadow: 4px 4px 10px rgba(0,0,0,0.1); padding-left: 2vw; }
         
         .guest-title { font-size: 4vw; color: #334155; margin-bottom: 15px; font-weight: bold; }
         .guest-subtitle { font-size: 2.2vw; color: #64748b; margin-top: 0; background: white; padding: 10px 25px; border-radius: 50px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); display: inline-block; }
@@ -106,8 +105,18 @@
         .guest-status-text { font-size: 3.5vw; margin: 10px 0 20px 0; font-weight: bold; }
         .guest-data-box { background: #f8fafc; padding: 30px; border-radius: 15px; display: inline-block; text-align: left; border: 2px solid #e2e8f0; }
         .guest-name { font-size: 3vw; color: #1e293b; margin: 0 0 15px 0; border-bottom: 2px solid #cbd5e1; padding-bottom: 10px; }
-        .guest-detail { font-size: 1.8vw; color: #475569; margin: 10px 0; display: flex; align-items: center; }
-        .guest-detail-label { width: 120px; color: #94a3b8; font-weight: normal; display: inline-block; }
+        
+        /* 💡 修正標題斷行與對齊問題 */
+        .guest-detail { font-size: 2vw; color: #475569; margin: 15px 0; display: flex; align-items: center; }
+        .guest-detail-label { 
+            width: 5em;             /* 使用相對字體寬度，不寫死 px */
+            color: #94a3b8; 
+            font-weight: normal; 
+            white-space: nowrap;    /* 強制不斷行 */
+            flex-shrink: 0;         /* 空間不夠時絕對不壓縮 */
+            margin-right: 15px;     /* 與右側資料的間距 */
+            display: inline-block;
+        }
     </style>
 </head>
 <body>
@@ -116,7 +125,6 @@
     <div id="guestScreen">
         <!-- 待機畫面 -->
         <div id="guestDefault">
-            <!-- 💡 醒目的報到台大字 -->
             <h1 class="guest-massive-title">報到台</h1>
             <h2 class="guest-title">115年合作推動地震資訊傳遞服務成果交流會</h2>
             <h3 class="guest-subtitle">請向工作人員出示 QR Code 或報上手機末 3 碼</h3>
@@ -152,7 +160,7 @@
         
         <div class="header-stats">
             <div>
-                <h2 style="margin: 0; color: var(--primary);">📋 115年合作推動地震資訊傳遞服務成果交流會報到台</h2>
+                <h2 style="margin: 0; color: var(--primary);">📋115年合作推動地震資訊傳遞服務成果交流會</h2>
                 <div style="margin-top: 10px;">
                     <button class="logout-btn" onclick="logout()">登出系統</button>
                 </div>
