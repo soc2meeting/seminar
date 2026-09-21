@@ -9,6 +9,7 @@
         :root {
             --primary: #0284c7; --success: #166534; --warning: #ea580c; --danger: #dc2626; --bg: #f8fafc;
         }
+        html { scroll-behavior: smooth; } /* 啟動平滑捲動 */
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, '微軟正黑體', sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: #334155; }
         .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
         
@@ -52,17 +53,17 @@
         tr:hover { background-color: #f8fafc; }
         .badge-success { background: #dcfce7; color: var(--success); padding: 4px 8px; border-radius: 4px; font-size: 0.9em; font-weight: bold; }
         
-        /* 💡 1. 成功報到後的整列閃爍動畫 */
+        /* 成功報到後的整列閃爍動畫 */
         @keyframes flashRowAnim {
             0%, 50%, 100% { background-color: transparent; }
-            25%, 75% { background-color: #fef08a; } /* 黃底閃爍 */
+            25%, 75% { background-color: #fef08a; } 
         }
         .flash-row { animation: flashRowAnim 2s ease-in-out; }
         .flash-row td, .flash-row td strong, .flash-row td span {
-            color: #b45309 !important; /* 文字轉為顯眼橘色 */
+            color: #b45309 !important; 
         }
 
-        /* 💡 2. 重複報到的 Icon 警告動畫 */
+        /* 重複報到的 Icon 警告動畫 */
         @keyframes warningPulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.4); color: #dc2626; }
@@ -126,20 +127,21 @@
         </div>
 
         <div class="action-panel">
-            <!-- 掃描區 -->
+            <!-- 掃描區 (💡 版面順序大幅調整，讓相機優先置頂) -->
             <div class="scanner-card" id="scannerArea">
-                <h3 style="margin-top: 0;">📷 條碼掃描區</h3>
-                <!-- 狀態指示燈 -->
-                <div id="gunStatus" class="scanner-status status-ready">🟢 實體掃描槍：已就緒</div>
-                <p style="font-size: 0.9em; color: #64748b;">(點擊畫面任意處即可恢復焦點)</p>
+                <h3 style="margin-top: 0; margin-bottom: 15px;">📷 條碼掃描區</h3>
+                
+                <!-- 鏡頭控制按鈕與畫面移到最上方 -->
+                <button class="btn" id="cameraBtn" onclick="startCamera()" style="background: #475569; width: 100%; margin-bottom: 10px;">📷 開啟手機鏡頭掃描</button>
+                <button class="btn" id="stopCameraBtn" onclick="stopCamera()" style="background: #dc2626; width: 100%; display: none; margin-bottom: 10px;">❌ 關閉手機鏡頭</button>
+                
+                <div id="reader" style="width: 100%; display: none; overflow: hidden; border-radius: 8px; margin-bottom: 15px;"></div>
                 
                 <hr style="border: 0; border-top: 1px dashed #cbd5e1; margin: 15px 0;">
                 
-                <!-- 鏡頭控制按鈕 -->
-                <button class="btn" id="cameraBtn" onclick="startCamera()" style="background: #475569; width: 100%;">📷 開啟手機鏡頭掃描</button>
-                <button class="btn" id="stopCameraBtn" onclick="stopCamera()" style="background: #dc2626; width: 100%; display: none;">❌ 關閉手機鏡頭</button>
-                
-                <div id="reader" style="width: 100%; margin-top: 15px; display: none; overflow: hidden; border-radius: 8px;"></div>
+                <!-- 狀態指示燈移到下方 -->
+                <div id="gunStatus" class="scanner-status status-ready">🟢 實體掃描槍：已就緒</div>
+                <p style="font-size: 0.9em; color: #64748b; margin-bottom: 0;">(點擊畫面任意處即可恢復焦點)</p>
                 
                 <!-- 隱藏的實體掃描槍接收框 -->
                 <input type="text" id="gunInput" autocomplete="off" inputmode="none">
@@ -160,7 +162,6 @@
                     <button class="tab-btn active" id="tab-checkedin" onclick="switchTab('checkedin')">✅ 僅顯示已報到</button>
                     <button class="tab-btn" id="tab-all" onclick="switchTab('all')">📋 完整報名清單</button>
                 </div>
-                <!-- 更新資料按鈕 -->
                 <button class="btn" id="refreshBtn" onclick="refreshData()" style="padding: 8px 15px; font-size: 0.95em; background: #10b981;">🔄 更新資料</button>
             </div>
             
@@ -184,7 +185,6 @@
     <!-- 報到結果彈窗 -->
     <div class="modal-overlay" id="resultModal">
         <div class="modal-box">
-            <!-- 增加包裹層方便動畫 -->
             <div style="height: 60px; display: flex; justify-content: center; align-items: center; margin-bottom: 15px;">
                 <h2 id="modalIcon" style="margin: 0; font-size: 1.5em;">✅</h2>
             </div>
@@ -228,10 +228,7 @@
         let isProcessing = false;
         let html5QrCode = null;
         let currentTab = 'checkedin'; 
-        
-        // 💡 紀錄剛報到成功的學員 ID，用於關閉彈窗後觸發閃爍特效
-        let pendingFlashId = null;
-
+        let pendingFlashId = null; 
         let manualTargetId = '';
         let manualTargetPhone = '';
 
@@ -337,7 +334,7 @@
             document.addEventListener('click', (e) => {
                 const isSearching = e.target.id === 'searchInput' || e.target.id === 'manualPhoneInput';
                 const isModalOpen = document.getElementById('resultModal').style.display.includes('flex') || document.getElementById('manualModal').style.display.includes('flex');
-                if (!isSearching && !isModalOpen && e.target.id !== 'refreshBtn') {
+                if (!isSearching && !isModalOpen && e.target.id !== 'refreshBtn' && e.target.id !== 'cameraBtn') {
                     gunInput.focus();
                 }
             });
@@ -379,7 +376,12 @@
                     }
                 },
                 (errorMessage) => { }
-            ).catch((err) => {
+            ).then(() => {
+                // 💡 啟動後自動滑動對齊鏡頭
+                setTimeout(() => {
+                    document.getElementById('scannerArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 300);
+            }).catch((err) => {
                 alert("無法啟動相機！請確認您的瀏覽器允許存取相機權限。");
                 stopCamera();
             });
@@ -413,12 +415,11 @@
                 
                 if (res.status === 'success') {
                     playSound('success');
-                    pendingFlashId = res.id; // 💡 記住這個 ID 準備閃爍
+                    pendingFlashId = res.id; 
                     showModal('✅', '報到成功', '', res.name, res.org, res.title, 'var(--success)', 'success');
                     updateLocalList(res.id, '已報到', res.time, res.meal);
                 } else if (res.status === 'warning') {
                     playSound('error');
-                    // 💡 加入 'warning' 參數觸發紅色特效
                     showModal('⚠️', '重複報到', res.message, res.name, res.org, res.title, 'var(--danger)', 'warning');
                 } else {
                     playSound('error');
@@ -431,7 +432,6 @@
             });
         }
 
-        // 💡 更新：加入 type 參數控制彈窗外觀 (閃爍警告與按鈕顏色)
         function showModal(icon, title, msg, name, org, titleText, color, type) {
             const modalIcon = document.getElementById('modalIcon');
             const modalBtn = document.getElementById('modalBtn');
@@ -445,12 +445,12 @@
             document.getElementById('modalTitleText').textContent = titleText;
             
             if (type === 'warning' || type === 'error') {
-                modalIcon.classList.add('icon-warning-blink'); // ⚠️圖示閃爍
-                modalBtn.className = 'btn btn-large btn-danger-modal'; // 按鈕變紅
+                modalIcon.classList.add('icon-warning-blink'); 
+                modalBtn.className = 'btn btn-large btn-danger-modal'; 
                 modalBtn.textContent = '關閉 / 返回掃描';
             } else {
                 modalIcon.classList.remove('icon-warning-blink');
-                modalBtn.className = 'btn btn-large btn-primary-modal'; // 按鈕變藍
+                modalBtn.className = 'btn btn-large btn-primary-modal'; 
                 if (type === 'success') {
                     modalBtn.textContent = '確認發放餐券並關閉';
                 }
@@ -464,9 +464,15 @@
             isProcessing = false; 
             gunInput.focus();
 
-            // 💡 關閉彈窗時，觸發剛報到成功者的閃爍動畫
+            // 💡 關閉後，如果相機是開著的，自動捲回相機
+            if (document.getElementById('reader').style.display === 'block') {
+                setTimeout(() => {
+                    document.getElementById('scannerArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }, 100);
+            }
+
+            // 💡 觸發閃爍動畫
             if (pendingFlashId) {
-                // 找到該列並加入動畫 class
                 const targetRow = document.querySelector(`tr[data-id="${pendingFlashId}"]`);
                 if (targetRow) {
                     targetRow.classList.remove('flash-row');
@@ -545,7 +551,6 @@
             
             let checkedIn = 0;
             
-            // 💡 確保時間排序正確 (localeCompare 會把晚的時間排在前面，達成置頂效果)
             const sortedList = [...participantList].sort((a, b) => {
                 if(a.status === '已報到' && b.status !== '已報到') return -1;
                 if(a.status !== '已報到' && b.status === '已報到') return 1;
@@ -569,7 +574,6 @@
                     : `<span style="color:#cbd5e1;">-</span>`;
 
                 const tr = document.createElement('tr');
-                // 💡 賦予 ID 屬性，供閃爍動畫抓取
                 tr.setAttribute('data-id', p.id); 
                 tr.innerHTML = `
                     <td>${statusHtml}</td>
