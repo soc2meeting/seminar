@@ -48,16 +48,38 @@
         .table-container { background: white; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); overflow-x: auto; padding: 20px; }
         table { width: 100%; border-collapse: collapse; text-align: left; margin-top: 10px; }
         th { background: var(--primary); color: white; padding: 15px; white-space: nowrap; }
-        td { padding: 12px 15px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; }
+        td { padding: 12px 15px; border-bottom: 1px solid #f1f5f9; vertical-align: middle; transition: color 0.3s; }
         tr:hover { background-color: #f8fafc; }
         .badge-success { background: #dcfce7; color: var(--success); padding: 4px 8px; border-radius: 4px; font-size: 0.9em; font-weight: bold; }
         
-        /* 手動報到按鈕樣式 */
+        /* 💡 1. 成功報到後的整列閃爍動畫 */
+        @keyframes flashRowAnim {
+            0%, 50%, 100% { background-color: transparent; }
+            25%, 75% { background-color: #fef08a; } /* 黃底閃爍 */
+        }
+        .flash-row { animation: flashRowAnim 2s ease-in-out; }
+        .flash-row td, .flash-row td strong, .flash-row td span {
+            color: #b45309 !important; /* 文字轉為顯眼橘色 */
+        }
+
+        /* 💡 2. 重複報到的 Icon 警告動畫 */
+        @keyframes warningPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.4); color: #dc2626; }
+            100% { transform: scale(1); }
+        }
+        .icon-warning-blink { animation: warningPulse 0.8s infinite; }
+
+        /* 動態按鈕樣式 */
         .btn-checkin-manual { background: var(--primary); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.9em; font-weight: bold; transition: 0.2s; }
         .btn-checkin-manual:hover { background: #0369a1; }
-        
         .meal-toggle { cursor: pointer; padding: 4px 8px; border-radius: 4px; border: 1px solid #cbd5e1; background: white; font-size: 0.9em; transition: 0.2s; }
         .meal-active { background: var(--warning); color: white; border-color: var(--warning); font-weight: bold; }
+
+        /* 彈窗按鈕顏色變化 */
+        .btn-danger-modal { background: #dc2626 !important; }
+        .btn-danger-modal:hover { background: #b91c1c !important; }
+        .btn-primary-modal { background: var(--primary) !important; }
 
         /* 彈出視窗共用樣式 */
         .modal-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
@@ -138,7 +160,7 @@
                     <button class="tab-btn active" id="tab-checkedin" onclick="switchTab('checkedin')">✅ 僅顯示已報到</button>
                     <button class="tab-btn" id="tab-all" onclick="switchTab('all')">📋 完整報名清單</button>
                 </div>
-                <!-- 💡 更新資料按鈕移至此處 -->
+                <!-- 更新資料按鈕 -->
                 <button class="btn" id="refreshBtn" onclick="refreshData()" style="padding: 8px 15px; font-size: 0.95em; background: #10b981;">🔄 更新資料</button>
             </div>
             
@@ -162,8 +184,11 @@
     <!-- 報到結果彈窗 -->
     <div class="modal-overlay" id="resultModal">
         <div class="modal-box">
-            <h2 id="modalIcon">✅</h2>
-            <h2 id="modalTitle" style="color: var(--success);">報到成功</h2>
+            <!-- 增加包裹層方便動畫 -->
+            <div style="height: 60px; display: flex; justify-content: center; align-items: center; margin-bottom: 15px;">
+                <h2 id="modalIcon" style="margin: 0; font-size: 1.5em;">✅</h2>
+            </div>
+            <h2 id="modalTitle" style="color: var(--success); margin-top: 0;">報到成功</h2>
             <div id="modalMsg" style="color: #64748b; font-weight: bold;"></div>
             
             <div class="modal-info">
@@ -204,18 +229,19 @@
         let html5QrCode = null;
         let currentTab = 'checkedin'; 
         
-        // 手動報到專用變數
+        // 💡 紀錄剛報到成功的學員 ID，用於關閉彈窗後觸發閃爍特效
+        let pendingFlashId = null;
+
         let manualTargetId = '';
         let manualTargetPhone = '';
 
-        // --- 1. 自動登入與 Session 期限管理 ---
+        // --- 1. 自動登入與 Session ---
         window.onload = function() {
             const savedPass = localStorage.getItem('eew_kiosk_pass');
             const savedTime = localStorage.getItem('eew_kiosk_time'); 
             
             if (savedPass && savedTime) {
                 const now = new Date().getTime();
-                // Session 期限設定：1 小時 (3600000 毫秒)
                 if (now - parseInt(savedTime) < 3600000) {
                     document.getElementById('passcodeInput').value = savedPass;
                     login();
@@ -270,7 +296,7 @@
             });
         }
 
-        // --- 1-1. 手動更新資料功能 ---
+        // --- 1-1. 手動更新資料 ---
         function refreshData() {
             if (!passcode) return;
             const btn = document.getElementById('refreshBtn');
@@ -302,7 +328,7 @@
             });
         }
 
-        // --- 2. 掃描槍邏輯 (隱藏輸入框) ---
+        // --- 2. 掃描槍邏輯 ---
         const gunInput = document.getElementById('gunInput');
         const gunStatus = document.getElementById('gunStatus');
 
@@ -334,7 +360,7 @@
             }
         });
 
-        // --- 3. 手機相機掃描邏輯 ---
+        // --- 3. 手機相機 ---
         function startCamera() {
             document.getElementById('cameraBtn').style.display = 'none';
             document.getElementById('stopCameraBtn').style.display = 'block';
@@ -352,7 +378,7 @@
                         processCheckin(decodedText);
                     }
                 },
-                (errorMessage) => { /* 忽略不符合的畫面 */ }
+                (errorMessage) => { }
             ).catch((err) => {
                 alert("無法啟動相機！請確認您的瀏覽器允許存取相機權限。");
                 stopCamera();
@@ -365,18 +391,16 @@
                     document.getElementById('cameraBtn').style.display = 'block';
                     document.getElementById('stopCameraBtn').style.display = 'none';
                     document.getElementById('reader').style.display = 'none';
-                }).catch(err => {
-                    console.error("停止相機時發生錯誤", err);
-                });
+                }).catch(err => {});
             }
         }
 
-        // --- 4. 處理報到核心邏輯 ---
+        // --- 4. 處理報到 ---
         function processCheckin(qrId) {
             if (isProcessing) return;
             isProcessing = true; 
             
-            showModal('🔄', '處理中...', `正在驗證...`, '...', '...', '...', '#64748b');
+            showModal('🔄', '處理中...', `正在驗證...`, '...', '...', '...', '#64748b', 'normal');
             document.getElementById('modalBtn').style.display = 'none';
 
             fetch(GAS_URL, {
@@ -385,39 +409,53 @@
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' }
             }).then(res => res.json()).then(res => {
                 
-                const modalBtn = document.getElementById('modalBtn');
-                modalBtn.style.display = 'block';
+                document.getElementById('modalBtn').style.display = 'block';
                 
                 if (res.status === 'success') {
                     playSound('success');
-                    showModal('✅', '報到成功', '', res.name, res.org, res.title, 'var(--success)');
-                    modalBtn.textContent = '確認發放餐券並關閉';
+                    pendingFlashId = res.id; // 💡 記住這個 ID 準備閃爍
+                    showModal('✅', '報到成功', '', res.name, res.org, res.title, 'var(--success)', 'success');
                     updateLocalList(res.id, '已報到', res.time, res.meal);
                 } else if (res.status === 'warning') {
                     playSound('error');
-                    showModal('⚠️', '重複報到', res.message, res.name, res.org, res.title, 'var(--warning)');
-                    modalBtn.textContent = '關閉 / 返回掃描';
+                    // 💡 加入 'warning' 參數觸發紅色特效
+                    showModal('⚠️', '重複報到', res.message, res.name, res.org, res.title, 'var(--danger)', 'warning');
                 } else {
                     playSound('error');
-                    showModal('❌', '錯誤', res.message, '未知人員', '無', '無', 'var(--danger)');
-                    modalBtn.textContent = '關閉 / 返回掃描';
+                    showModal('❌', '錯誤', res.message, '未知人員', '無', '無', 'var(--danger)', 'error');
                 }
             }).catch(err => {
                 playSound('error');
-                showModal('❌', '連線失敗', '請確認網路狀態後再試', '-', '-', '-', 'var(--danger)');
+                showModal('❌', '連線失敗', '請確認網路狀態後再試', '-', '-', '-', 'var(--danger)', 'error');
                 document.getElementById('modalBtn').style.display = 'block';
-                document.getElementById('modalBtn').textContent = '關閉 / 返回掃描';
             });
         }
 
-        function showModal(icon, title, msg, name, org, titleText, color) {
-            document.getElementById('modalIcon').textContent = icon;
+        // 💡 更新：加入 type 參數控制彈窗外觀 (閃爍警告與按鈕顏色)
+        function showModal(icon, title, msg, name, org, titleText, color, type) {
+            const modalIcon = document.getElementById('modalIcon');
+            const modalBtn = document.getElementById('modalBtn');
+            
+            modalIcon.textContent = icon;
             document.getElementById('modalTitle').textContent = title;
             document.getElementById('modalTitle').style.color = color;
             document.getElementById('modalMsg').textContent = msg;
             document.getElementById('modalName').textContent = name;
             document.getElementById('modalOrg').textContent = org;
             document.getElementById('modalTitleText').textContent = titleText;
+            
+            if (type === 'warning' || type === 'error') {
+                modalIcon.classList.add('icon-warning-blink'); // ⚠️圖示閃爍
+                modalBtn.className = 'btn btn-large btn-danger-modal'; // 按鈕變紅
+                modalBtn.textContent = '關閉 / 返回掃描';
+            } else {
+                modalIcon.classList.remove('icon-warning-blink');
+                modalBtn.className = 'btn btn-large btn-primary-modal'; // 按鈕變藍
+                if (type === 'success') {
+                    modalBtn.textContent = '確認發放餐券並關閉';
+                }
+            }
+
             document.getElementById('resultModal').style.display = 'flex';
         }
 
@@ -425,13 +463,24 @@
             document.getElementById('resultModal').style.display = 'none';
             isProcessing = false; 
             gunInput.focus();
+
+            // 💡 關閉彈窗時，觸發剛報到成功者的閃爍動畫
+            if (pendingFlashId) {
+                // 找到該列並加入動畫 class
+                const targetRow = document.querySelector(`tr[data-id="${pendingFlashId}"]`);
+                if (targetRow) {
+                    targetRow.classList.remove('flash-row');
+                    void targetRow.offsetWidth; // 強制重繪
+                    targetRow.classList.add('flash-row');
+                }
+                pendingFlashId = null;
+            }
         }
 
-        // --- 5. 手動報到核對電話邏輯 ---
+        // --- 5. 手動報到 ---
         function promptManualCheckin(id) {
             const person = participantList.find(p => p.id === id);
             if (!person) return;
-            
             manualTargetId = person.id;
             manualTargetPhone = person.phone.replace(/\D/g, ''); 
             
@@ -458,7 +507,6 @@
                 alert('請輸入電話號碼！');
                 return;
             }
-            
             if (manualTargetPhone === inputPhone || (inputPhone.length >= 3 && manualTargetPhone.endsWith(inputPhone))) {
                 closeManualModal();
                 processCheckin(manualTargetId); 
@@ -473,7 +521,7 @@
             return phone.substring(0, phone.length - 3) + '***';
         }
 
-        // --- 6. 名單切換與渲染邏輯 ---
+        // --- 6. 名單渲染 ---
         function switchTab(tab) {
             currentTab = tab;
             document.getElementById('tab-checkedin').className = tab === 'checkedin' ? 'tab-btn active' : 'tab-btn';
@@ -497,6 +545,7 @@
             
             let checkedIn = 0;
             
+            // 💡 確保時間排序正確 (localeCompare 會把晚的時間排在前面，達成置頂效果)
             const sortedList = [...participantList].sort((a, b) => {
                 if(a.status === '已報到' && b.status !== '已報到') return -1;
                 if(a.status !== '已報到' && b.status === '已報到') return 1;
@@ -520,6 +569,8 @@
                     : `<span style="color:#cbd5e1;">-</span>`;
 
                 const tr = document.createElement('tr');
+                // 💡 賦予 ID 屬性，供閃爍動畫抓取
+                tr.setAttribute('data-id', p.id); 
                 tr.innerHTML = `
                     <td>${statusHtml}</td>
                     <td><strong style="color:var(--primary);">${p.name}</strong><br><span style="font-size:0.8em;color:#64748b;">${maskPhone(p.phone)}</span></td>
