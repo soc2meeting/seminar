@@ -40,7 +40,8 @@
         .status-wait { background: #fee2e2; color: var(--danger); }
 
         /* 名單表格與頁籤 */
-        .tab-group { display: flex; gap: 10px; margin-bottom: 15px; }
+        .tab-group { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; justify-content: space-between; }
+        .tab-buttons { display: flex; gap: 10px; }
         .tab-btn { padding: 10px 20px; border: 2px solid var(--primary); background: white; color: var(--primary); border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1em; transition: 0.2s; }
         .tab-btn.active { background: var(--primary); color: white; }
 
@@ -86,9 +87,7 @@
         <div class="header-stats">
             <div>
                 <h2 style="margin: 0; color: var(--primary);">📋 EEW 交流會報到台</h2>
-                <!-- 💡 新增更新資料按鈕與版面微調 -->
-                <div style="display: flex; gap: 10px; margin-top: 15px;">
-                    <button class="btn" id="refreshBtn" onclick="refreshData()" style="padding: 6px 12px; font-size: 0.9em; background: #10b981;">🔄 更新資料</button>
+                <div style="margin-top: 10px;">
                     <button class="logout-btn" onclick="logout()">登出系統</button>
                 </div>
             </div>
@@ -135,8 +134,12 @@
         <!-- 名單區 -->
         <div class="table-container">
             <div class="tab-group">
-                <button class="tab-btn active" id="tab-checkedin" onclick="switchTab('checkedin')">✅ 僅顯示已報到</button>
-                <button class="tab-btn" id="tab-all" onclick="switchTab('all')">📋 完整報名清單</button>
+                <div class="tab-buttons">
+                    <button class="tab-btn active" id="tab-checkedin" onclick="switchTab('checkedin')">✅ 僅顯示已報到</button>
+                    <button class="tab-btn" id="tab-all" onclick="switchTab('all')">📋 完整報名清單</button>
+                </div>
+                <!-- 💡 更新資料按鈕移至此處 -->
+                <button class="btn" id="refreshBtn" onclick="refreshData()" style="padding: 8px 15px; font-size: 0.95em; background: #10b981;">🔄 更新資料</button>
             </div>
             
             <table id="participantTable">
@@ -208,16 +211,15 @@
         // --- 1. 自動登入與 Session 期限管理 ---
         window.onload = function() {
             const savedPass = localStorage.getItem('eew_kiosk_pass');
-            const savedTime = localStorage.getItem('eew_kiosk_time'); // 取得登入時間
+            const savedTime = localStorage.getItem('eew_kiosk_time'); 
             
             if (savedPass && savedTime) {
                 const now = new Date().getTime();
-                // 💡 Session 期限設定：1 小時 (3600000 毫秒)
+                // Session 期限設定：1 小時 (3600000 毫秒)
                 if (now - parseInt(savedTime) < 3600000) {
                     document.getElementById('passcodeInput').value = savedPass;
                     login();
                 } else {
-                    // 超過 1 小時，自動清除記憶並要求重新登入
                     logout(); 
                 }
             }
@@ -248,7 +250,6 @@
                     passcode = input;
                     participantList = res.list;
                     
-                    // 💡 登入成功，儲存密碼與當前時間戳記
                     localStorage.setItem('eew_kiosk_pass', input); 
                     localStorage.setItem('eew_kiosk_time', new Date().getTime());
                     
@@ -269,7 +270,7 @@
             });
         }
 
-        // --- 1-1. 💡 新增手動更新資料功能 ---
+        // --- 1-1. 手動更新資料功能 ---
         function refreshData() {
             if (!passcode) return;
             const btn = document.getElementById('refreshBtn');
@@ -283,7 +284,7 @@
             }).then(res => res.json()).then(res => {
                 if (res.status === 'success') {
                     participantList = res.list;
-                    renderList(document.getElementById('searchInput').value.trim()); // 帶入目前的搜尋條件
+                    renderList(document.getElementById('searchInput').value.trim());
                     btn.textContent = '✅ 已更新';
                 } else {
                     alert(res.message);
