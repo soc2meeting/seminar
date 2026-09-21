@@ -9,7 +9,7 @@
         :root {
             --primary: #0284c7; --success: #166534; --warning: #ea580c; --danger: #dc2626; --bg: #f8fafc;
         }
-        html { scroll-behavior: smooth; } /* 啟動平滑捲動 */
+        html { scroll-behavior: smooth; }
         body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, '微軟正黑體', sans-serif; background-color: var(--bg); margin: 0; padding: 0; color: #334155; }
         .container { max-width: 1000px; margin: 0 auto; padding: 20px; }
         
@@ -41,7 +41,7 @@
         .status-wait { background: #fee2e2; color: var(--danger); }
 
         /* 名單表格與頁籤 */
-        .tab-group { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; justify-content: space-between; }
+        .tab-group { display: flex; gap: 10px; margin-bottom: 15px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
         .tab-buttons { display: flex; gap: 10px; }
         .tab-btn { padding: 10px 20px; border: 2px solid var(--primary); background: white; color: var(--primary); border-radius: 6px; cursor: pointer; font-weight: bold; font-size: 1em; transition: 0.2s; }
         .tab-btn.active { background: var(--primary); color: white; }
@@ -59,9 +59,7 @@
             25%, 75% { background-color: #fef08a; } 
         }
         .flash-row { animation: flashRowAnim 2s ease-in-out; }
-        .flash-row td, .flash-row td strong, .flash-row td span {
-            color: #b45309 !important; 
-        }
+        .flash-row td, .flash-row td strong, .flash-row td span { color: #b45309 !important; }
 
         /* 重複報到的 Icon 警告動畫 */
         @keyframes warningPulse {
@@ -70,6 +68,11 @@
             100% { transform: scale(1); }
         }
         .icon-warning-blink { animation: warningPulse 0.8s infinite; }
+        
+        @keyframes fadeInScale {
+            0% { opacity: 0; transform: scale(0.9); }
+            100% { opacity: 1; transform: scale(1); }
+        }
 
         /* 動態按鈕樣式 */
         .btn-checkin-manual { background: var(--primary); color: white; border: none; padding: 6px 12px; border-radius: 4px; cursor: pointer; font-size: 0.9em; font-weight: bold; transition: 0.2s; }
@@ -77,7 +80,6 @@
         .meal-toggle { cursor: pointer; padding: 4px 8px; border-radius: 4px; border: 1px solid #cbd5e1; background: white; font-size: 0.9em; transition: 0.2s; }
         .meal-active { background: var(--warning); color: white; border-color: var(--warning); font-weight: bold; }
 
-        /* 彈窗按鈕顏色變化 */
         .btn-danger-modal { background: #dc2626 !important; }
         .btn-danger-modal:hover { background: #b91c1c !important; }
         .btn-primary-modal { background: var(--primary) !important; }
@@ -89,9 +91,44 @@
         .modal-info { background: #f8fafc; padding: 20px; border-radius: 8px; text-align: left; font-size: 1.2em; line-height: 1.6; margin: 20px 0; border: 1px solid #e2e8f0; }
         .modal-info strong { color: #64748b; }
         .btn-large { width: 100%; padding: 15px; font-size: 1.2em; }
+
+        /* 💡 來賓螢幕專屬樣式 */
+        #guestScreen { display: none; height: 100vh; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); flex-direction: column; align-items: center; justify-content: center; text-align: center; font-family: '微軟正黑體', sans-serif; overflow: hidden; }
+        .guest-title { font-size: 4.5vw; color: var(--primary); margin-bottom: 10px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.05); }
+        .guest-subtitle { font-size: 2.5vw; color: #64748b; margin-top: 0; }
+        
+        #guestActive { display: none; background: white; padding: 50px 80px; border-radius: 20px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); animation: fadeInScale 0.5s ease-out; border-top: 10px solid var(--primary); }
+        .guest-status-icon { font-size: 8vw; margin-bottom: 10px; line-height: 1; }
+        .guest-status-text { font-size: 3.5vw; margin: 10px 0 20px 0; font-weight: bold; }
+        .guest-data-box { background: #f8fafc; padding: 30px; border-radius: 15px; display: inline-block; text-align: left; border: 2px solid #e2e8f0; }
+        .guest-name { font-size: 3vw; color: #1e293b; margin: 0 0 15px 0; border-bottom: 2px solid #cbd5e1; padding-bottom: 10px; }
+        .guest-detail { font-size: 1.8vw; color: #475569; margin: 10px 0; display: flex; align-items: center; }
+        .guest-detail-label { width: 120px; color: #94a3b8; font-weight: normal; display: inline-block; }
     </style>
 </head>
 <body>
+
+    <!-- 💡 專屬來賓螢幕 UI (網址帶 ?mode=guest 時顯示) -->
+    <div id="guestScreen">
+        <!-- 待機畫面 -->
+        <div id="guestDefault">
+            <h1 class="guest-title">115年EEW成果交流會</h1>
+            <h2 class="guest-subtitle">請向工作人員出示您的專屬 QR Code 或報上手機末 3 碼</h2>
+        </div>
+        
+        <!-- 報到成功/重複畫面 -->
+        <div id="guestActive">
+            <div id="guestDisplayIcon" class="guest-status-icon">✅</div>
+            <div id="guestDisplayText" class="guest-status-text" style="color: var(--success);">報到成功</div>
+            
+            <div class="guest-data-box">
+                <h2 class="guest-name">歡迎，<span id="guestDataName" style="color: var(--primary);">王○明</span> 蒞臨</h2>
+                <div class="guest-detail"><span class="guest-detail-label">服務單位</span> <strong id="guestDataOrg">中央氣象署</strong></div>
+                <div class="guest-detail"><span class="guest-detail-label">職  稱</span> <strong id="guestDataTitle">技正</strong></div>
+                <div class="guest-detail"><span class="guest-detail-label">聯絡電話</span> <strong id="guestDataPhone" style="letter-spacing: 2px;">0912***789</strong></div>
+            </div>
+        </div>
+    </div>
 
     <!-- 登入畫面 -->
     <div id="loginScreen">
@@ -104,7 +141,7 @@
         </div>
     </div>
 
-    <!-- 儀表板畫面 -->
+    <!-- 儀表板主畫面 -->
     <div id="dashboard" class="container">
         
         <div class="header-stats">
@@ -127,11 +164,9 @@
         </div>
 
         <div class="action-panel">
-            <!-- 掃描區 (💡 版面順序大幅調整，讓相機優先置頂) -->
             <div class="scanner-card" id="scannerArea">
                 <h3 style="margin-top: 0; margin-bottom: 15px;">📷 條碼掃描區</h3>
                 
-                <!-- 鏡頭控制按鈕與畫面移到最上方 -->
                 <button class="btn" id="cameraBtn" onclick="startCamera()" style="background: #475569; width: 100%; margin-bottom: 10px;">📷 開啟手機鏡頭掃描</button>
                 <button class="btn" id="stopCameraBtn" onclick="stopCamera()" style="background: #dc2626; width: 100%; display: none; margin-bottom: 10px;">❌ 關閉手機鏡頭</button>
                 
@@ -139,15 +174,11 @@
                 
                 <hr style="border: 0; border-top: 1px dashed #cbd5e1; margin: 15px 0;">
                 
-                <!-- 狀態指示燈移到下方 -->
                 <div id="gunStatus" class="scanner-status status-ready">🟢 實體掃描槍：已就緒</div>
                 <p style="font-size: 0.9em; color: #64748b; margin-bottom: 0;">(點擊畫面任意處即可恢復焦點)</p>
-                
-                <!-- 隱藏的實體掃描槍接收框 -->
                 <input type="text" id="gunInput" autocomplete="off" inputmode="none">
             </div>
 
-            <!-- 手動搜尋區 -->
             <div class="search-card">
                 <h3 style="margin-top: 0;">🔍 手動搜尋報到</h3>
                 <p style="font-size: 0.9em; color: #64748b;">忘記帶手機？請輸入姓名或電話：</p>
@@ -155,14 +186,17 @@
             </div>
         </div>
 
-        <!-- 名單區 -->
         <div class="table-container">
             <div class="tab-group">
                 <div class="tab-buttons">
                     <button class="tab-btn active" id="tab-checkedin" onclick="switchTab('checkedin')">✅ 僅顯示已報到</button>
                     <button class="tab-btn" id="tab-all" onclick="switchTab('all')">📋 完整報名清單</button>
                 </div>
-                <button class="btn" id="refreshBtn" onclick="refreshData()" style="padding: 8px 15px; font-size: 0.95em; background: #10b981;">🔄 更新資料</button>
+                <!-- 💡 新增的開啟來賓螢幕按鈕 -->
+                <div style="display: flex; gap: 10px;">
+                    <button class="btn" onclick="openGuestScreen()" style="padding: 8px 15px; font-size: 0.95em; background: #8b5cf6;">🖥️ 開啟來賓螢幕</button>
+                    <button class="btn" id="refreshBtn" onclick="refreshData()" style="padding: 8px 15px; font-size: 0.95em; background: #10b981;">🔄 更新資料</button>
+                </div>
             </div>
             
             <table id="participantTable">
@@ -176,7 +210,6 @@
                     </tr>
                 </thead>
                 <tbody id="listBody">
-                    <!-- JS 動態產生 -->
                 </tbody>
             </table>
         </div>
@@ -206,12 +239,10 @@
         <div class="modal-box">
             <h2 style="color: var(--primary); font-size: 1.8em;">手動報到核對</h2>
             <p>請核對 <strong id="manualTargetName" style="font-size: 1.2em; color: var(--warning);"></strong> 的資料</p>
-            
             <div style="text-align: left; background: #f1f5f9; padding: 20px; border-radius: 8px; margin: 20px 0;">
                 <p style="margin: 0 0 10px 0; color: #334155; font-weight: bold;">請對方念出聯絡電話：</p>
                 <input type="tel" id="manualPhoneInput" style="width: 100%; padding: 12px; font-size: 1.2em; border: 2px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; text-align: center; letter-spacing: 2px;" placeholder="請輸入完整電話 或 後 3 碼">
             </div>
-            
             <div style="display: flex; gap: 10px;">
                 <button class="btn" style="background: #64748b; flex: 1;" onclick="closeManualModal()">取消</button>
                 <button class="btn" style="flex: 2;" onclick="verifyManualPhone()">確認報到</button>
@@ -231,9 +262,20 @@
         let pendingFlashId = null; 
         let manualTargetId = '';
         let manualTargetPhone = '';
+        let guestTimeout = null;
 
-        // --- 1. 自動登入與 Session ---
+        // --- 1. 自動登入 / 來賓螢幕模式偵測 ---
         window.onload = function() {
+            // 💡 偵測網址是否有 ?mode=guest
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('mode') === 'guest') {
+                document.getElementById('loginScreen').style.display = 'none';
+                document.getElementById('dashboard').style.display = 'none';
+                document.getElementById('guestScreen').style.display = 'flex';
+                initGuestScreenMode();
+                return; // 停止執行後續的工作人員邏輯
+            }
+
             const savedPass = localStorage.getItem('eew_kiosk_pass');
             const savedTime = localStorage.getItem('eew_kiosk_time'); 
             
@@ -248,15 +290,99 @@
             }
         };
 
+        // --- 💡 來賓螢幕通訊邏輯 ---
+        function openGuestScreen() {
+            // 開啟新視窗，帶入 mode=guest 參數，並設定預設大小
+            window.open(window.location.pathname + '?mode=guest', 'EEW_Guest_Screen', 'width=1024,height=768');
+        }
+
+        function initGuestScreenMode() {
+            // 監聽來自工作人員頁面寫入 LocalStorage 的事件
+            window.addEventListener('storage', (e) => {
+                if (e.key === 'eew_guest_data' && e.newValue) {
+                    const data = JSON.parse(e.newValue);
+                    
+                    // 填入資料
+                    document.getElementById('guestDataName').textContent = data.name;
+                    document.getElementById('guestDataOrg').textContent = data.org;
+                    document.getElementById('guestDataTitle').textContent = data.title;
+                    document.getElementById('guestDataPhone').textContent = data.phone;
+                    
+                    const iconEl = document.getElementById('guestDisplayIcon');
+                    const textEl = document.getElementById('guestDisplayText');
+                    
+                    if (data.status === 'success') {
+                        iconEl.textContent = '✅';
+                        iconEl.className = 'guest-status-icon';
+                        textEl.textContent = '報到成功';
+                        textEl.style.color = 'var(--success)';
+                        document.getElementById('guestActive').style.borderTopColor = 'var(--success)';
+                    } else if (data.status === 'warning') {
+                        iconEl.textContent = '⚠️';
+                        iconEl.className = 'guest-status-icon icon-warning-blink';
+                        textEl.textContent = '已完成報到';
+                        textEl.style.color = 'var(--warning)';
+                        document.getElementById('guestActive').style.borderTopColor = 'var(--warning)';
+                    } else {
+                        // 失敗/查無此人不顯示個資
+                        iconEl.textContent = '❌';
+                        iconEl.className = 'guest-status-icon';
+                        textEl.textContent = '無效條碼，請洽工作人員';
+                        textEl.style.color = 'var(--danger)';
+                        document.getElementById('guestActive').style.borderTopColor = 'var(--danger)';
+                        document.getElementById('guestDataName').textContent = '---';
+                        document.getElementById('guestDataOrg').textContent = '---';
+                        document.getElementById('guestDataTitle').textContent = '---';
+                        document.getElementById('guestDataPhone').textContent = '---';
+                    }
+
+                    // 切換顯示畫面
+                    document.getElementById('guestDefault').style.display = 'none';
+                    document.getElementById('guestActive').style.display = 'block';
+
+                    // 8 秒後自動還原為待機畫面
+                    if (guestTimeout) clearTimeout(guestTimeout);
+                    guestTimeout = setTimeout(() => {
+                        document.getElementById('guestActive').style.display = 'none';
+                        document.getElementById('guestDefault').style.display = 'block';
+                    }, 8000);
+                }
+            });
+        }
+
+        // 個資隱蔽函數 (王小明 -> 王○明，歐陽修 -> 歐○○修)
+        function maskNameForGuest(name) {
+            if (!name) return "---";
+            if (name.length <= 1) return name;
+            if (name.length === 2) return name[0] + '○';
+            if (name.length === 3) return name[0] + '○' + name[2];
+            return name[0] + '○'.repeat(name.length - 2) + name[name.length - 1];
+        }
+
+        // 推播資料給來賓螢幕
+        function broadcastToGuest(status, id, rawName, org, title) {
+            let phone = '';
+            // 從本地快取找電話
+            const person = participantList.find(p => p.id === id || (p.id && p.id.replace("EEW-", "") === id));
+            if (person) phone = person.phone;
+
+            const payload = {
+                status: status,
+                name: maskNameForGuest(rawName),
+                org: org || '---',
+                title: title || '---',
+                phone: maskPhone(phone) || '---',
+                t: Date.now() // 加入時間戳，確保每次推播都會觸發 Storage 事件
+            };
+            localStorage.setItem('eew_guest_data', JSON.stringify(payload));
+        }
+
+        // --- 工作人員常規邏輯 ---
         function logout() {
             localStorage.removeItem('eew_kiosk_pass');
             localStorage.removeItem('eew_kiosk_time');
             location.reload();
         }
-
-        document.getElementById('passcodeInput').addEventListener('keypress', function (e) {
-            if (e.key === 'Enter') login();
-        });
 
         function login() {
             const input = document.getElementById('passcodeInput').value;
@@ -293,7 +419,6 @@
             });
         }
 
-        // --- 1-1. 手動更新資料 ---
         function refreshData() {
             if (!passcode) return;
             const btn = document.getElementById('refreshBtn');
@@ -325,7 +450,6 @@
             });
         }
 
-        // --- 2. 掃描槍邏輯 ---
         const gunInput = document.getElementById('gunInput');
         const gunStatus = document.getElementById('gunStatus');
 
@@ -334,7 +458,7 @@
             document.addEventListener('click', (e) => {
                 const isSearching = e.target.id === 'searchInput' || e.target.id === 'manualPhoneInput';
                 const isModalOpen = document.getElementById('resultModal').style.display.includes('flex') || document.getElementById('manualModal').style.display.includes('flex');
-                if (!isSearching && !isModalOpen && e.target.id !== 'refreshBtn' && e.target.id !== 'cameraBtn') {
+                if (!isSearching && !isModalOpen && !e.target.className.includes('btn')) {
                     gunInput.focus();
                 }
             });
@@ -357,7 +481,6 @@
             }
         });
 
-        // --- 3. 手機相機 ---
         function startCamera() {
             document.getElementById('cameraBtn').style.display = 'none';
             document.getElementById('stopCameraBtn').style.display = 'block';
@@ -377,7 +500,6 @@
                 },
                 (errorMessage) => { }
             ).then(() => {
-                // 💡 啟動後自動滑動對齊鏡頭
                 setTimeout(() => {
                     document.getElementById('scannerArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 300);
@@ -397,7 +519,6 @@
             }
         }
 
-        // --- 4. 處理報到 ---
         function processCheckin(qrId) {
             if (isProcessing) return;
             isProcessing = true; 
@@ -418,12 +539,21 @@
                     pendingFlashId = res.id; 
                     showModal('✅', '報到成功', '', res.name, res.org, res.title, 'var(--success)', 'success');
                     updateLocalList(res.id, '已報到', res.time, res.meal);
+                    
+                    // 💡 推播給來賓螢幕
+                    broadcastToGuest('success', res.id, res.name, res.org, res.title);
                 } else if (res.status === 'warning') {
                     playSound('error');
                     showModal('⚠️', '重複報到', res.message, res.name, res.org, res.title, 'var(--danger)', 'warning');
+                    
+                    // 💡 推播給來賓螢幕
+                    broadcastToGuest('warning', res.id, res.name, res.org, res.title);
                 } else {
                     playSound('error');
                     showModal('❌', '錯誤', res.message, '未知人員', '無', '無', 'var(--danger)', 'error');
+                    
+                    // 💡 推播錯誤給來賓螢幕
+                    broadcastToGuest('error', qrId, '', '', '');
                 }
             }).catch(err => {
                 playSound('error');
@@ -464,26 +594,23 @@
             isProcessing = false; 
             gunInput.focus();
 
-            // 💡 關閉後，如果相機是開著的，自動捲回相機
             if (document.getElementById('reader').style.display === 'block') {
                 setTimeout(() => {
                     document.getElementById('scannerArea').scrollIntoView({ behavior: 'smooth', block: 'start' });
                 }, 100);
             }
 
-            // 💡 觸發閃爍動畫
             if (pendingFlashId) {
                 const targetRow = document.querySelector(`tr[data-id="${pendingFlashId}"]`);
                 if (targetRow) {
                     targetRow.classList.remove('flash-row');
-                    void targetRow.offsetWidth; // 強制重繪
+                    void targetRow.offsetWidth; 
                     targetRow.classList.add('flash-row');
                 }
                 pendingFlashId = null;
             }
         }
 
-        // --- 5. 手動報到 ---
         function promptManualCheckin(id) {
             const person = participantList.find(p => p.id === id);
             if (!person) return;
@@ -527,7 +654,6 @@
             return phone.substring(0, phone.length - 3) + '***';
         }
 
-        // --- 6. 名單渲染 ---
         function switchTab(tab) {
             currentTab = tab;
             document.getElementById('tab-checkedin').className = tab === 'checkedin' ? 'tab-btn active' : 'tab-btn';
@@ -610,7 +736,6 @@
             });
         }
 
-        // 音效產生器
         const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
         function playSound(type) {
             if (audioCtx.state === 'suspended') audioCtx.resume();
