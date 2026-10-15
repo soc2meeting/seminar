@@ -537,8 +537,8 @@
                     <div class="seismic-bar"></div>
                 </div>
             </div>
-            <p style="color: #0284c7; background-color: #e0f2fe; padding: 15px; border-radius: 8px; font-size: 1.05em; font-weight: bold; margin-bottom: 25px;">
-                💡 為了確保報名後能正確收到 QR Code，請先驗證 Email 信箱。驗證成功後即可填寫完整報名資訊。
+            <p id="regInstruction" style="color: #0284c7; background-color: #e0f2fe; padding: 15px; border-radius: 8px; font-size: 1.05em; font-weight: bold; margin-bottom: 25px;">
+                💡 為了確保報名後能正確收到 QR Code，請先驗證 Email 信箱。驗證成功後即可填寫完整報名資訊。            
             </p>
             
             <div id="step1">
@@ -577,7 +577,10 @@
                     <p style="margin: 10px 0;"><strong>姓名：</strong><span id="resName"></span></p>
                     <p style="margin: 10px 0;"><strong>單位：</strong><span id="resOrg"></span></p>
                 </div>
-                <p style="font-size:1.1em;">若有任何疑問，請來信洽詢：<br><a href="mailto:chi-ting.weng@cwa.gov.tw" style="color:#0284c7; font-weight:bold;">chi-ting.weng@cwa.gov.tw</a> (翁先生)</p>
+                <p style="font-size:1.15em; color:#ea580c; font-weight:bold; margin-top:20px;">
+                    請至您的 email 信箱確認是否有收到 QR code，若有問題請來信洽詢：<br>
+                    <a href="mailto:chi-ting.weng@cwa.gov.tw" style="color:#0284c7; text-decoration:underline;">chi-ting.weng@cwa.gov.tw</a> (翁先生)
+                </p>            
             </div>
         </div>
     </div>
@@ -685,6 +688,7 @@
                     document.getElementById('step1').style.display = 'none';
                     document.getElementById('step2').style.display = 'none';
                     this.style.display = 'none';
+                    document.getElementById('regInstruction').style.display = 'none'; 
                     document.getElementById('successDisplay').style.display = 'block';
                     document.getElementById('resEmail').textContent = data.email;
                     document.getElementById('resName').textContent = data.name;
