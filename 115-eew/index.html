@@ -323,6 +323,35 @@
             .header-content { padding: 20px; }
             .tab-content { padding: 20px; }
         }
+        /* 💡 驗證碼欄位與文字閃爍特效 */
+        @keyframes highlight-flash {
+            0%, 100% { border-color: #ea580c; box-shadow: 0 0 12px rgba(234, 88, 12, 0.6); background-color: #fff7ed; }
+            50% { border-color: #0284c7; box-shadow: 0 0 8px rgba(2, 132, 199, 0.3); background-color: #ffffff; }
+        }
+        @keyframes text-flash {
+            0%, 100% { opacity: 1; transform: translateY(0); }
+            50% { opacity: 0.7; transform: translateY(3px); }
+        }
+        .input-flash {
+            animation: highlight-flash 1.2s infinite;
+            border: 2px solid #ea580c !important;
+            color: #ea580c !important;
+        }
+        /* 當使用者點擊輸入框時，停止閃爍 */
+        .input-flash:focus {
+            animation: none;
+            border-color: #0284c7 !important;
+            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2) !important;
+            background-color: #ffffff !important;
+            color: #334155 !important;
+        }
+        /* 當驗證成功鎖定欄位時，停止閃爍並變灰 */
+        .input-flash:disabled {
+            animation: none;
+            border: 1px solid #cbd5e1 !important;
+            background-color: #f1f5f9 !important;
+            color: #334155 !important;
+        }
     </style>
 </head>
 <body>
@@ -555,8 +584,12 @@
             <div id="step2" style="display:none; margin-top:25px;">
                 <hr style="margin-bottom:25px; border-top:1px dashed #cbd5e1;">
                 <div class="form-group">
-                    <label>6位數驗證碼 *</label>
-                    <input type="text" id="verifyCode" required placeholder="請查看信箱並輸入驗證碼" style="letter-spacing: 3px; text-align: center; font-size: 1.3em;">
+                    <!-- 閃爍的提示文字與箭頭 -->
+                    <label style="color: #ea580c; font-size: 1.15em; font-weight: bold; animation: text-flash 1.2s infinite; display: inline-block;">
+                        👇 請查看您的信箱，並在此輸入 6 位數驗證碼 *
+                    </label>
+                    <!-- 套用閃爍特效、字體加大的輸入框 -->
+                    <input type="text" id="verifyCode" class="input-flash" required placeholder="點此輸入驗證碼" style="letter-spacing: 5px; text-align: center; font-size: 1.5em; font-weight: bold; padding: 18px;">
                 </div>
                 <button type="button" id="checkCodeBtn" class="submit-btn" style="background-color: #0284c7;">確認驗證碼</button>
             </div>
