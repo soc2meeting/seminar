@@ -472,31 +472,36 @@
                     <div class="seismic-bar"></div>
                 </div>
             </div>
-           <!-- 新增：具設計感的時間與地點資訊區塊 (置中平衡版) -->
-            <div style="background: rgba(255, 255, 255, 0.95); border-left: 6px solid #0284c7; border-radius: 8px; padding: 20px; margin-bottom: 25px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); display: flex; flex-wrap: wrap; align-items: center; justify-content: space-around; gap: 20px;">
+           <!-- 新增：具現代玻璃質感的時間與地點資訊區塊 -->
+            <div style="background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 249, 255, 0.4) 100%); border: 1px solid rgba(255, 255, 255, 0.9); border-radius: 16px; padding: 25px 20px; margin-bottom: 30px; box-shadow: 0 10px 30px rgba(2, 132, 199, 0.08), inset 0 2px 0 rgba(255, 255, 255, 1); backdrop-filter: blur(12px); display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 25px; position: relative; overflow: hidden;">
                 
+                <!-- 頂部極簡漸層裝飾線 (科技質感) -->
+                <div style="position: absolute; top: 0; left: 0; width: 100%; height: 4px; background: linear-gradient(90deg, #0ea5e9, #0284c7, #ea580c);"></div>
+
                 <!-- 日期區塊 -->
-                <div style="display: flex; align-items: center; justify-content: center; gap: 15px; flex: 1; min-width: 320px;">
-                    <div style="background: #e0f2fe; color: #0284c7; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4em; flex-shrink: 0;">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 18px; flex: 1; min-width: 320px;">
+                    <!-- 圓角擬物風 Icon 容器 -->
+                    <div style="background: #ffffff; width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.6em; flex-shrink: 0; box-shadow: 0 4px 15px rgba(2, 132, 199, 0.1); border: 1px solid rgba(2, 132, 199, 0.1);">
                         📅
                     </div>
-                    <div>
-                        <div style="font-size: 0.9em; color: #64748b; font-weight: bold; letter-spacing: 1px;">交流會日期</div>
-                        <div style="color: #0f172a; font-size: 1.15em; font-weight: bold; margin-top: 3px;">
-                            115年 11月 24日 (週二) <span style="color: #ea580c;">14:00 - 17:00</span>
+                    <div style="text-align: left;">
+                        <div style="font-size: 0.8em; color: #64748b; font-weight: bold; letter-spacing: 2px;">EVENT DATE</div>
+                        <div style="color: #0f172a; font-size: 1.1em; font-weight: bold; margin-top: 4px;">
+                            115年 11月 24日 (二) 
+                            <div style="display: inline-block; color: #ea580c; background: #fff7ed; padding: 3px 8px; border-radius: 6px; margin-left: 5px; border: 1px solid #ffedd5; font-size: 0.9em; transform: translateY(-1px);">14:00 - 17:00</div>
                         </div>
                     </div>
                 </div>
 
                 <!-- 地點區塊 -->
-                <div style="display: flex; align-items: center; justify-content: center; gap: 15px; flex: 1; min-width: 320px;">
-                    <div style="background: #e0f2fe; color: #0284c7; width: 45px; height: 45px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.4em; flex-shrink: 0;">
+                <div style="display: flex; align-items: center; justify-content: center; gap: 18px; flex: 1; min-width: 320px;">
+                    <div style="background: #ffffff; width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.6em; flex-shrink: 0; box-shadow: 0 4px 15px rgba(2, 132, 199, 0.1); border: 1px solid rgba(2, 132, 199, 0.1);">
                         📍
                     </div>
-                    <div>
-                        <div style="font-size: 0.9em; color: #64748b; font-weight: bold; letter-spacing: 1px;">交流會地點</div>
-                        <div style="color: #0f172a; font-size: 1.15em; font-weight: bold; margin-top: 3px;">
-                            中央氣象署 3樓 310會議室
+                    <div style="text-align: left;">
+                        <div style="font-size: 0.8em; color: #64748b; font-weight: bold; letter-spacing: 2px;">EVENT LOCATION</div>
+                        <div style="color: #0f172a; font-size: 1.1em; font-weight: bold; margin-top: 4px;">
+                            中央氣象署 3樓 <span style="color: #0284c7;">310會議室</span>
                         </div>
                     </div>
                 </div>
