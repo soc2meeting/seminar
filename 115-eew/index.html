@@ -352,6 +352,54 @@
             background-color: #f1f5f9 !important;
             color: #334155 !important;
         }
+        /* 💡 科技感相片牆專屬樣式 */
+        .gallery-container {
+            margin-top: 50px;
+            padding-top: 35px;
+            border-top: 2px dashed #cbd5e1;
+        }
+        .gallery-title {
+            color: #0c4a6e;
+            font-size: 1.6em;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-weight: bold;
+        }
+        /* 自動排列的響應式網格 */
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+        .photo-item {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            aspect-ratio: 4 / 3; /* 讓所有照片視覺上裁切成統一比例 */
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+            border: 2px solid transparent; 
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: pointer;
+            background-color: #f8fafc; 
+        }
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+            transition: transform 0.5s ease;
+        }
+        /* 滑鼠懸浮的發光放大特效 */
+        .photo-item:hover {
+            transform: translateY(-8px); 
+            border-color: #0ea5e9; 
+            box-shadow: 0 15px 30px rgba(2, 132, 199, 0.25), 0 0 15px rgba(14, 165, 233, 0.3); 
+            z-index: 10;
+        }
+        .photo-item:hover img {
+            transform: scale(1.08); 
+        }
     </style>
 </head>
 <body>
@@ -453,6 +501,43 @@
                     
                     <div class="chalk-label">主辦單位：</div>
                     <div class="chalk-text">交通部中央氣象署地震測報中心</div>
+                </div>
+            </div>
+            <!-- 💡 照片牆區塊 -->
+            <div class="gallery-container">
+                <h3 class="gallery-title">
+                    <span style="background: #e0f2fe; padding: 8px; border-radius: 8px; font-size: 0.9em;">📸</span> 
+                    精彩活動成果回顧
+                </h3>
+                
+                <div class="photo-grid">
+                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_3943 (小).JPG" alt="成果照片" loading="lazy"></div>
+                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_3951 (小).JPG" alt="成果照片" loading="lazy"></div>
+                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_3952 (小).JPG" alt="成果照片" loading="lazy"></div>
+                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_3954 (小).JPG" alt="成果照片" loading="lazy"></div>
+                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_3955 (小).JPG" alt="成果照片" loading="lazy"></div>
+                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6293 (小).JPG" alt="成果照片" loading="lazy"></div>
+                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6300 (小).JPG" alt="成果照片" loading="lazy"></div>
+                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6304 (小).JPG" alt="成果照片" loading="lazy"></div>
+                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6395 (小).JPG" alt="成果照片" loading="lazy"></div>
+                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6442 (小).JPG" alt="成果照片" loading="lazy"></div>
+                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6457 (小).JPG" alt="成果照片" loading="lazy"></div>
+                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6458 (小).JPG" alt="成果照片" loading="lazy"></div>
+                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6462 (小).JPG" alt="成果照片" loading="lazy"></div>
+                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6479 (小).JPG" alt="成果照片" loading="lazy"></div>
+                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6487 (小).JPG" alt="成果照片" loading="lazy"></div>
+                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8810 (小).JPG" alt="成果照片" loading="lazy"></div>
+                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8812 (小).JPG" alt="成果照片" loading="lazy"></div>
+                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8852 (小).JPG" alt="成果照片" loading="lazy"></div>
+                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8854 (小).JPG" alt="成果照片" loading="lazy"></div>
+                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8872 (小).JPG" alt="成果照片" loading="lazy"></div>
+                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8897 (小).JPG" alt="成果照片" loading="lazy"></div>
+                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8911 (小).JPG" alt="成果照片" loading="lazy"></div>
+                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8939 (小).JPG" alt="成果照片" loading="lazy"></div>
+                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8973 (小).JPG" alt="成果照片" loading="lazy"></div>
+                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8988 (小).JPG" alt="成果照片" loading="lazy"></div>
+                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_9101 (小).JPG" alt="成果照片" loading="lazy"></div>
+                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_9109 (小).JPG" alt="成果照片" loading="lazy"></div>
                 </div>
             </div>
         </div>
