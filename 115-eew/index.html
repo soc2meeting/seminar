@@ -5,176 +5,38 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>115年合作推動地震資訊傳遞服務成果交流會</title>
     <style>
-        /* 💡 新增：專業簡介區塊樣式 (對應您的圖片風格) */
-        .intro-box {
-            background-color: #f8fafc;
-            padding: 35px 40px;
-            border-radius: 12px;
-            color: #334155;
-            font-size: 1.15em;
-            line-height: 1.9;
-            text-align: justify;
-            border: 1px solid #e2e8f0;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
-        }
-        .intro-meta {
-            text-align: center;
-            font-size: 1.05em;
-            color: #64748b;
-            margin-top: 25px;
-            padding-top: 20px;
-            border-top: 1px dashed #cbd5e1;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            flex-wrap: wrap;
-        }
-        .intro-meta span {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        /* 💡 動態地震波元素 (Seismic Wave Animation) */
-        .seismic-wave-container {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 5px;
-            height: 60px;
-            margin-bottom: 20px;
-        }
-        .seismic-bar {
-            width: 6px;
-            background-color: var(--primary-blue);
-            border-radius: 3px;
-            animation: eq-pulse 1.2s infinite ease-in-out;
-        }
-        /* 💡 特色亮點卡片排版 (強制 2x2 佈局，加大尺寸) */
-        .feature-grid {
-            display: grid;
-            /* 強制設定為兩欄等寬，解決 3+1 跑版問題 */
-            grid-template-columns: repeat(2, 1fr); 
-            gap: 30px; /* 加大卡片之間的間距 */
-            margin-top: 30px;
-        }
-        
-        .feature-card {
-            background: #ffffff;
-            border-radius: 12px;
-            padding: 35px 30px; /* 加大卡片內距，讓畫面更飽滿 */
-            box-shadow: 0 4px 15px rgba(0,0,0,0.04);
-            border: 1px solid #e2e8f0;
-            border-top: 5px solid var(--primary-blue); /* 加粗頂部飾條 */
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        /* 滑鼠移過去的浮動特效 */
-        .feature-card:hover {
-            transform: translateY(-6px);
-            box-shadow: 0 12px 25px rgba(0,0,0,0.1);
-        }
-        
-        .feature-card h4 {
-            margin-top: 0;
-            color: #0c4a6e;
-            font-size: 1.3em; /* 放大標題字體 */
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            border-bottom: 1px dashed #e2e8f0; /* 標題下方加入細緻的分隔線 */
-            padding-bottom: 15px;
-        }
-        
-        .feature-card p {
-            margin: 0;
-            font-size: 1.05em; /* 放大內文字體 */
-            color: #475569;
-            line-height: 1.85;
-            text-align: justify; /* 讓文字左右對齊，看起來更整齊 */
-        }
-
-        /* 確保在手機螢幕上會自動變成單排垂直排列 */
-        @media (max-width: 768px) {
-            .feature-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-        /* 💡 黑板樣式設計 (Blackboard Style - 淺色板書版) */
-        .blackboard-container {
-            background-color: #375342; /* 調淺的黑板綠，看起來更像擦過的黑板 */
-            border: 12px solid #6b4423; /* 木頭邊框 */
-            border-radius: 8px; 
-            padding: 30px;
-            max-width: 650px; 
-            margin: 50px auto 0; 
-            box-shadow: 
-                inset 0 0 15px rgba(0,0,0,0.3), /* 減輕內陰影，讓畫面更亮 */
-                5px 5px 15px rgba(0,0,0,0.15); 
-            color: #fdfaf6; 
-            text-align: center; 
-            /* 💡 指定手寫板書字體 (標楷體/楷體) */
-            font-family: 'Kaiti', 'BiauKai', 'DFKai-SB', '楷體', cursive, sans-serif;
-        }
-        
-        .blackboard-title {
-            font-size: 1.8em;
-            margin-top: 0;
-            margin-bottom: 25px;
-            color: #fdfaf6;
-            border-bottom: 2px dashed #fdfaf6; 
-            display: inline-block;
-            padding-bottom: 10px;
-            text-shadow: 1px 1px 3px rgba(255,255,255,0.4); /* 加強粉筆暈染感 */
-            letter-spacing: 3px;
-        }
-        
-        .blackboard-content {
-            display: grid;
-            grid-template-columns: auto 1fr; 
-            gap: 15px 10px; 
-            width: fit-content; 
-            margin: 0 auto; 
-            text-align: left; 
-        }
-        
-        .chalk-label {
-            color: #ffd700;
-            font-size: 1.3em;
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.2);
-            letter-spacing: 1px;
-            text-align: right; 
-        }
-        
-        .chalk-text {
-            font-size: 1.3em;
-            line-height: 1.5;
-            text-shadow: 1px 1px 2px rgba(255,255,255,0.2);
-            letter-spacing: 1px;
-        }
-        /* 設定每根波紋的高度、延遲與透明度，創造波動感 */
-        .seismic-bar:nth-child(1) { height: 20%; animation-delay: -1.2s; opacity: 0.3; }
-        .seismic-bar:nth-child(2) { height: 40%; animation-delay: -1.1s; opacity: 0.5; }
-        .seismic-bar:nth-child(3) { height: 70%; animation-delay: -1.0s; opacity: 0.8; }
-        .seismic-bar:nth-child(4) { height: 100%; animation-delay: -0.9s; background-color: var(--accent-orange); } /* 主波以橘色凸顯 */
-        .seismic-bar:nth-child(5) { height: 60%; animation-delay: -0.8s; opacity: 0.8; }
-        .seismic-bar:nth-child(6) { height: 30%; animation-delay: -0.7s; opacity: 0.5; }
-        .seismic-bar:nth-child(7) { height: 15%; animation-delay: -0.6s; opacity: 0.3; }
-
-        @keyframes eq-pulse {
-            0%, 100% { transform: scaleY(0.2); }
-            50% { transform: scaleY(1.1); }
-        }
+        /* ==========================================
+           1. 全域變數與基礎設定
+           ========================================== */
         :root {
-            --primary-blue: #0284c7; --light-blue: #e0f2fe; --bg-color: #f8fafc;
-            --card-bg: #ffffff; --text-main: #334155; --text-muted: #64748b; --accent-orange: #f97316;
+            --primary-blue: #0284c7; 
+            --light-blue: #e0f2fe; 
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff; 
+            --text-main: #334155; 
+            --text-muted: #64748b; 
+            --accent-orange: #f97316;
         }
 
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, '微軟正黑體', sans-serif; margin: 0; padding: 0; color: var(--text-main); background-color: var(--bg-color); line-height: 1.6; display: flex; flex-direction: column; min-height: 100vh; }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, '微軟正黑體', sans-serif; 
+            margin: 0; padding: 0; 
+            color: var(--text-main); 
+            background-color: var(--bg-color); 
+            line-height: 1.6; 
+            display: flex; flex-direction: column; 
+            min-height: 100vh; 
+        }
         
-        /* 標頭背景設定 */
+        .container { 
+            max-width: 1200px; width: 95%; 
+            margin: 40px auto; padding: 0 15px; 
+            flex: 1; 
+        }
+
+        /* ==========================================
+           2. 頁首 (Header) 與頁尾 (Footer)
+           ========================================== */
         header { 
             background-image: url('EEW_bg_top.jpg'); 
             background-size: cover;
@@ -184,19 +46,16 @@
             text-align: center; 
             border-bottom: 4px solid var(--primary-blue); 
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            display: flex; justify-content: center; align-items: center;
         }
 
-        /* 💡 優化：真實毛玻璃質感，大幅降低白底濃度、縮小框框 */
         .header-content {
-            background: rgba(255, 255, 255, 0.25); /* 降至 25% 的極透明白底 */
-            padding: 15px 35px; /* 縮小內距讓框框變小 */
+            background: rgba(255, 255, 255, 0.25); 
+            padding: 15px 35px; 
             border-radius: 12px;
             box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
-            backdrop-filter: blur(12px); /* 加強模糊度 */
-            -webkit-backdrop-filter: blur(12px); /* 支援蘋果設備 */
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px); 
             border: 1px solid rgba(255, 255, 255, 0.4);
             display: inline-block;
             max-width: 90%;
@@ -205,9 +64,20 @@
         header h1 { margin: 0; font-size: 2.6em; color: #0c4a6e; font-weight: 900; letter-spacing: 2px; text-shadow: 0px 0px 8px rgba(255,255,255,0.9), 1px 1px 2px rgba(255,255,255,0.8); line-height: 1.4; }
         header p { font-size: 1.3em; color: #1e293b; margin-top: 10px; margin-bottom: 0; font-weight: bold; letter-spacing: 1px; text-shadow: 0px 0px 5px rgba(255,255,255,0.8); }
 
-        /* 💡 優化：放寬網頁容器，解決議程太窄的問題 */
-        .container { max-width: 1200px; width: 95%; margin: 40px auto; padding: 0 15px; flex: 1; }
+        footer { 
+            background-color: #0b1f38; 
+            background-image: url('EEW_bg_b.jpg');
+            background-size: cover; background-position: center; background-repeat: no-repeat;
+            color: #ffffff; text-align: center; 
+            padding: 90px 20px; margin-top: 60px; 
+            font-size: 1.2em; font-weight: bold; letter-spacing: 2px; 
+            text-shadow: 2px 2px 5px rgba(0,0,0,0.8), -1px -1px 3px rgba(0,0,0,0.5);
+            box-shadow: inset 0 8px 15px rgba(0,0,0,0.2);
+        }
 
+        /* ==========================================
+           3. 頁籤切換 (Tabs)
+           ========================================== */
         .tabs { display: flex; justify-content: center; gap: 10px; margin-bottom: 25px; flex-wrap: wrap; }
         .tab-btn { background-color: var(--card-bg); border: 2px solid var(--light-blue); color: var(--primary-blue); padding: 12px 30px; font-size: 1.15em; font-weight: bold; border-radius: 8px; cursor: pointer; transition: all 0.3s; }
         .tab-btn:hover { background-color: var(--light-blue); }
@@ -217,113 +87,77 @@
         .tab-content.active { display: block; animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .section-title { color: var(--primary-blue); border-bottom: 2px solid var(--light-blue); padding-bottom: 10px; margin-top: 0; font-size: 1.5em; }
-        .info-list { list-style: none; padding: 0; }
-        .info-list li { margin-bottom: 15px; display: flex; font-size: 1.15em; border-bottom: 1px dashed #e2e8f0; padding-bottom: 12px; }
-        .info-list span.label { font-weight: bold; color: var(--primary-blue); width: 110px; flex-shrink: 0; }
+        /* ==========================================
+           4. 動態地震波特效
+           ========================================== */
+        .seismic-wave-container { display: flex; align-items: center; justify-content: center; gap: 5px; height: 60px; margin-bottom: 20px; }
+        .seismic-bar { width: 6px; background-color: var(--primary-blue); border-radius: 3px; animation: eq-pulse 1.2s infinite ease-in-out; }
+        .seismic-bar:nth-child(1) { height: 20%; animation-delay: -1.2s; opacity: 0.3; }
+        .seismic-bar:nth-child(2) { height: 40%; animation-delay: -1.1s; opacity: 0.5; }
+        .seismic-bar:nth-child(3) { height: 70%; animation-delay: -1.0s; opacity: 0.8; }
+        .seismic-bar:nth-child(4) { height: 100%; animation-delay: -0.9s; background-color: var(--accent-orange); } 
+        .seismic-bar:nth-child(5) { height: 60%; animation-delay: -0.8s; opacity: 0.8; }
+        .seismic-bar:nth-child(6) { height: 30%; animation-delay: -0.7s; opacity: 0.5; }
+        .seismic-bar:nth-child(7) { height: 15%; animation-delay: -0.6s; opacity: 0.3; }
+        @keyframes eq-pulse { 0%, 100% { transform: scaleY(0.2); } 50% { transform: scaleY(1.1); } }
 
-        /* 💡 結構化網格議程表 (Grid Style - 參考圖片三) */
-        .agenda-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 15px;
-            font-size: 1.15em;
-            background: #ffffff;
-            border: 2px solid #0284c7; /* 外層粗邊框，增加沉穩感 */
-        }
+        /* ==========================================
+           5. 交流會資訊頁 - 蘋果風彩卡與相片牆
+           ========================================== */
+        .intro-box { background-color: #f8fafc; padding: 35px 40px; border-radius: 12px; color: #334155; font-size: 1.15em; line-height: 1.9; text-align: justify; border: 1px solid #e2e8f0; box-shadow: inset 0 2px 4px rgba(0,0,0,0.02); }
         
-        .agenda-table th {
-            background-color: #0284c7; /* 實心標題列 */
-            color: #ffffff;
-            font-weight: bold;
-            padding: 16px;
-            text-align: center;
-            border: 1px solid #0284c7;
-            letter-spacing: 2px;
-        }
+        .feature-grid-v2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 25px; margin-top: 35px; }
+        .feature-card-v2 { border-radius: 24px; padding: 35px 30px; position: relative; overflow: hidden; transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease; display: flex; flex-direction: column; border: none; text-align: left; }
+        .feature-card-v2:hover { transform: translateY(-8px) scale(1.01); box-shadow: 0 15px 35px rgba(0,0,0,0.06); }
         
-        .agenda-table td {
-            padding: 15px 20px;
-            text-align: center; /* 💡 內容全面置中，解決重心偏左問題 */
-            border: 1px solid #cbd5e1; /* 清晰的內網格線 */
-            color: #334155;
-            vertical-align: middle;
-            line-height: 1.6;
-        }
-        
-        /* 時間欄位獨立底色，與內容區分 */
-        .agenda-table td:first-child {
-            width: 25%;
-            font-weight: bold;
-            color: #0369a1;
-            background-color: #f0f9ff;
-        }
-        
-        /* 跨欄的 Section 標題 (深灰色底+白字，更具份量感) */
-        .agenda-table td.section-header {
-            background-color: #64748b;
-            color: #ffffff;
-            font-weight: bold;
-            padding: 14px;
-            letter-spacing: 1px;
-            width: auto;
-        }
-        
-        /* 橘色強調文字 */
-        .text-orange {
-            color: #ea580c;
-        }
-        
-        .table-section-title { 
-            background-color: #fff7ed; 
-            color: var(--accent-orange); 
-            font-weight: bold; 
-            text-align: center; 
-        }
+        .fc-icon { background: rgba(255, 255, 255, 0.9); width: 65px; height: 65px; border-radius: 18px; display: flex; align-items: center; justify-content: center; font-size: 2em; margin-bottom: 25px; box-shadow: 0 8px 20px rgba(0,0,0,0.04); }
+        .feature-card-v2 h4 { margin: 0 0 12px 0; font-size: 1.3em; font-weight: 900; color: #0f172a; letter-spacing: 0.5px; }
+        .feature-card-v2 p { margin: 0; font-size: 1.05em; color: #334155; line-height: 1.8; opacity: 0.95; }
+        .num-highlight { font-size: 1.35em; font-weight: 900; font-family: 'Arial', sans-serif; margin: 0 3px; }
 
+        .bg-blue { background-color: #f0f9ff; } .bg-blue .num-highlight { color: #0284c7; }
+        .bg-pink { background-color: #fdf2f8; } .bg-pink .num-highlight { color: #db2777; }
+        .bg-orange { background-color: #fff7ed; } .bg-orange .num-highlight { color: #ea580c; }
+        .bg-green { background-color: #ecfdf5; } .bg-green .num-highlight { color: #059669; }
+        .bg-purple { background-color: #faf5ff; } .bg-purple .num-highlight { color: #7c3aed; }
+        .bg-yellow { background-color: #fefce8; border: 1px solid #fef08a; } .bg-yellow .num-highlight { color: #ca8a04; }
+        
+        .feature-card-v2::after { content: ''; position: absolute; bottom: -40px; right: -40px; width: 180px; height: 180px; background: radial-gradient(circle, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 70%); border-radius: 50%; z-index: 0; pointer-events: none; }
+        .fc-icon, .feature-card-v2 h4, .feature-card-v2 p { position: relative; z-index: 1; }
+
+        /* 相片牆輪播 */
+        .gallery-container { margin-top: 50px; padding-top: 35px; border-top: 2px dashed #cbd5e1; }
+        .gallery-title { color: #0c4a6e; font-size: 1.6em; margin-bottom: 25px; display: flex; align-items: center; gap: 12px; font-weight: bold; }
+        .carousel-wrapper { position: relative; display: flex; align-items: center; padding: 0 45px; overflow: hidden; }
+        .carousel-track { display: flex; gap: 20px; padding: 15px 0; width: 100%; transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1); }
+        .photo-item { flex: 0 0 calc((100% - 60px) / 4); position: relative; border-radius: 12px; overflow: hidden; aspect-ratio: 4 / 3; box-shadow: 0 4px 15px rgba(0,0,0,0.05); transition: all 0.4s ease; cursor: pointer; background-color: #f8fafc; }
+        .photo-item img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; }
+        .photo-item:hover { transform: translateY(-8px); box-shadow: 0 15px 30px rgba(2, 132, 199, 0.25), 0 0 15px rgba(14, 165, 233, 0.3); z-index: 10; }
+        .photo-item:hover img { transform: scale(1.08); }
+        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: #ffffff; border: 2px solid #e2e8f0; border-radius: 50%; width: 44px; height: 44px; font-size: 1.4em; color: #0284c7; cursor: pointer; z-index: 20; box-shadow: 0 4px 10px rgba(0,0,0,0.1); display: flex; justify-content: center; align-items: center; transition: all 0.3s; }
+        .carousel-btn:hover { background: #0284c7; color: white; border-color: #0284c7; box-shadow: 0 6px 15px rgba(2, 132, 199, 0.3); }
+        #prevBtn { left: 0; } #nextBtn { right: 0; }
+
+        /* ==========================================
+           6. 交流會議程 (Agenda)
+           ========================================== */
+        .agenda-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 1.15em; background: #ffffff; border: 2px solid #0284c7; }
+        .agenda-table th { background-color: #0284c7; color: #ffffff; font-weight: bold; padding: 16px; text-align: center; border: 1px solid #0284c7; letter-spacing: 2px; }
+        .agenda-table td { padding: 15px 20px; text-align: center; border: 1px solid #cbd5e1; color: #334155; vertical-align: middle; line-height: 1.6; }
+        .agenda-table td:first-child { width: 25%; font-weight: bold; color: #0369a1; background-color: #f0f9ff; }
+        .agenda-table td.section-header { background-color: #64748b; color: #ffffff; font-weight: bold; padding: 14px; letter-spacing: 1px; width: auto; }
+
+        /* ==========================================
+           7. 線上報名與表單特效
+           ========================================== */
         .form-group { margin-bottom: 20px; }
         label { display: block; margin-bottom: 8px; font-weight: bold; color: var(--text-main); font-size: 1.05em; }
         input[type="text"], input[type="email"], input[type="tel"], select { width: 100%; padding: 14px; border: 1px solid #cbd5e1; border-radius: 6px; box-sizing: border-box; font-size: 1.05em; }
         input:focus, select:focus { border-color: var(--primary-blue); outline: none; box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2); }
-        
         button.submit-btn { background-color: var(--accent-orange); color: white; border: none; padding: 16px 30px; font-size: 1.2em; border-radius: 6px; cursor: pointer; width: 100%; font-weight: bold; transition: all 0.3s; letter-spacing: 1px; }
         button.submit-btn:hover { background-color: #ea580c; }
         button.submit-btn:disabled { background-color: #cbd5e1; cursor: not-allowed; }
 
-        footer { 
-            /* 設定深藍色備用底色，並匯入您的圖片 */
-            background-color: #0b1f38; 
-            background-image: url('EEW_bg_b.jpg');
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
-            
-            /* 調整文字與排版 */
-            color: #ffffff; 
-            text-align: center; 
-            padding: 90px 20px; /* 稍微加高 padding，讓地震波紋露出更多 */
-            margin-top: 60px; 
-            font-size: 1.2em; 
-            font-weight: bold;
-            letter-spacing: 2px; 
-            
-            /* 加入文字陰影，避免文字被圖中的高光亮線吃掉 */
-            text-shadow: 2px 2px 5px rgba(0,0,0,0.8), -1px -1px 3px rgba(0,0,0,0.5);
-            /* 加入內陰影，讓網頁內容與頁尾的交界處更融合 */
-            box-shadow: inset 0 8px 15px rgba(0,0,0,0.2);
-        }
-
-        .custom-alert-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
-        .custom-alert-box { background: white; padding: 25px 35px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; max-width: 400px; width: 90%; }
-        .custom-alert-box h3 { color: #f97316; margin-top: 0; border-bottom: 2px solid #f1f5f9; padding-bottom: 12px; font-size: 1.3em;}
-        .custom-alert-btn { background: #0284c7; color: white; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer; margin-top: 18px; font-weight: bold; font-size: 1.1em; }
-
-        @media (max-width: 768px) {
-            header h1 { font-size: 1.8em; }
-            .header-content { padding: 20px; }
-            .tab-content { padding: 20px; }
-        }
-        /* 💡 驗證碼欄位與文字閃爍特效 */
         @keyframes highlight-flash {
             0%, 100% { border-color: #ea580c; box-shadow: 0 0 12px rgba(234, 88, 12, 0.6); background-color: #fff7ed; }
             50% { border-color: #0284c7; box-shadow: 0 0 8px rgba(2, 132, 199, 0.3); background-color: #ffffff; }
@@ -332,225 +166,37 @@
             0%, 100% { opacity: 1; transform: translateY(0); }
             50% { opacity: 0.7; transform: translateY(3px); }
         }
-        .input-flash {
-            animation: highlight-flash 1.2s infinite;
-            border: 2px solid #ea580c !important;
-            color: #ea580c !important;
-        }
-        /* 當使用者點擊輸入框時，停止閃爍 */
-        .input-flash:focus {
-            animation: none;
-            border-color: #0284c7 !important;
-            box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2) !important;
-            background-color: #ffffff !important;
-            color: #334155 !important;
-        }
-        /* 當驗證成功鎖定欄位時，停止閃爍並變灰 */
-        .input-flash:disabled {
-            animation: none;
-            border: 1px solid #cbd5e1 !important;
-            background-color: #f1f5f9 !important;
-            color: #334155 !important;
-        }
-        /* 💡 科技感相片牆專屬樣式 */
-        /* 💡 科技感相片牆 - 橫向雙排滑動版 (Netflix 風格) */
-        /* 💡 科技感相片牆 - 單排自動輪播版 */
-        /* 💡 科技感相片牆 - 絲滑整頁轉場版 */
-        .gallery-container {
-            margin-top: 50px;
-            padding-top: 35px;
-            border-top: 2px dashed #cbd5e1;
-        }
-        .gallery-title {
-            color: #0c4a6e;
-            font-size: 1.6em;
-            margin-bottom: 25px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-weight: bold;
-        }
-        .carousel-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-            padding: 0 45px;
-            /* 🌟 關鍵：隱藏軌道兩側超出的照片，讓畫面保持乾淨 */
-            overflow: hidden; 
-        }
-        .carousel-track {
-            display: flex;
-            gap: 20px;
-            padding: 15px 0;
-            width: 100%;
-            /* 🌟 關鍵：關閉原生捲軸，改用 cubic-bezier 設定極致絲滑的轉場曲線 */
-            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
-        }
-        .photo-item {
-            flex: 0 0 calc((100% - 60px) / 4); 
-            position: relative;
-            border-radius: 12px;
-            overflow: hidden;
-            aspect-ratio: 4 / 3;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            transition: all 0.4s ease;
-            cursor: pointer;
-            background-color: #f8fafc; 
-        }
-        .photo-item img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; 
-            transition: transform 0.5s ease;
-        }
-        .photo-item:hover {
-            transform: translateY(-8px); 
-            box-shadow: 0 15px 30px rgba(2, 132, 199, 0.25), 0 0 15px rgba(14, 165, 233, 0.3); 
-            z-index: 10;
-        }
-        .photo-item:hover img {
-            transform: scale(1.08); 
-        }
-        
-        /* 左右切換按鈕 */
-        .carousel-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: #ffffff;
-            border: 2px solid #e2e8f0;
-            border-radius: 50%;
-            width: 44px;
-            height: 44px;
-            font-size: 1.4em;
-            color: #0284c7;
-            cursor: pointer;
-            z-index: 20;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            transition: all 0.3s;
-        }
-        .carousel-btn:hover {
-            background: #0284c7;
-            color: white;
-            border-color: #0284c7;
-            box-shadow: 0 6px 15px rgba(2, 132, 199, 0.3);
-        }
-        #prevBtn { left: 0; }
-        #nextBtn { right: 0; }
+        .input-flash { animation: highlight-flash 1.2s infinite; border: 2px solid #ea580c !important; color: #ea580c !important; }
+        .input-flash:focus { animation: none; border-color: #0284c7 !important; box-shadow: 0 0 0 3px rgba(2, 132, 199, 0.2) !important; background-color: #ffffff !important; color: #334155 !important; }
+        .input-flash:disabled { animation: none; border: 1px solid #cbd5e1 !important; background-color: #f1f5f9 !important; color: #334155 !important; }
 
-        /* 響應式 */
+        /* ==========================================
+           8. 彈出警告視窗 (Alert)
+           ========================================== */
+        .custom-alert-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); z-index: 1000; justify-content: center; align-items: center; }
+        .custom-alert-box { background: white; padding: 25px 35px; border-radius: 12px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); text-align: center; max-width: 400px; width: 90%; }
+        .custom-alert-box h3 { color: #f97316; margin-top: 0; border-bottom: 2px solid #f1f5f9; padding-bottom: 12px; font-size: 1.3em;}
+        .custom-alert-btn { background: #0284c7; color: white; border: none; padding: 12px 25px; border-radius: 6px; cursor: pointer; margin-top: 18px; font-weight: bold; font-size: 1.1em; }
+
+        /* ==========================================
+           9. RWD 響應式設定
+           ========================================== */
         @media (max-width: 1024px) {
             .photo-item { flex: 0 0 calc((100% - 40px) / 3); }
         }
         @media (max-width: 768px) {
+            header h1 { font-size: 1.8em; }
+            .header-content { padding: 20px; }
+            .tab-content { padding: 20px; }
             .photo-item { flex: 0 0 calc((100% - 20px) / 2); }
             .carousel-wrapper { padding: 0; }
             .carousel-btn { display: none; }
         }
-        /* 💡 新版：蘋果風柔和彩卡 (Apple Soft Bento Style) */
-        .feature-grid-v2 {
-            display: grid;
-            /* 自動分配欄位，螢幕夠寬就放 3 欄，不夠就 2 欄或 1 欄 */
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 25px;
-            margin-top: 35px;
-        }
-        
-        .feature-card-v2 {
-            border-radius: 24px; /* 蘋果風大圓角 */
-            padding: 35px 30px;
-            position: relative;
-            overflow: hidden;
-            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
-            display: flex;
-            flex-direction: column;
-            border: none;
-            text-align: left; /* 移除左右強制對齊的僵硬感，讓文字自然呼吸 */
-        }
-        
-        .feature-card-v2:hover {
-            transform: translateY(-8px) scale(1.01);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.06);
-        }
-        
-        /* 懸浮白底水晶 Icon */
-        .fc-icon {
-            background: rgba(255, 255, 255, 0.9);
-            width: 65px;
-            height: 65px;
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2em;
-            margin-bottom: 25px;
-            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
-        }
-        
-        .feature-card-v2 h4 {
-            margin: 0 0 12px 0;
-            font-size: 1.3em;
-            font-weight: 900;
-            color: #0f172a;
-            letter-spacing: 0.5px;
-        }
-        
-        .feature-card-v2 p {
-            margin: 0;
-            font-size: 1.05em;
-            color: #334155;
-            line-height: 1.8;
-            opacity: 0.95;
-        }
-        
-        /* 🌟 關鍵：強調數據的字體，打破文字牆 */
-        .num-highlight {
-            font-size: 1.35em;
-            font-weight: 900;
-            font-family: 'Arial', sans-serif;
-            margin: 0 3px;
-        }
-
-        /* 賦予六張卡片專屬的柔和背景色與對應的數字強調色 */
-        .bg-blue { background-color: #f0f9ff; } 
-        .bg-blue .num-highlight { color: #0284c7; }
-        
-        .bg-pink { background-color: #fdf2f8; } 
-        .bg-pink .num-highlight { color: #db2777; }
-        
-        .bg-orange { background-color: #fff7ed; } 
-        .bg-orange .num-highlight { color: #ea580c; }
-        
-        .bg-green { background-color: #ecfdf5; } 
-        .bg-green .num-highlight { color: #059669; }
-        
-        .bg-purple { background-color: #faf5ff; } 
-        .bg-purple .num-highlight { color: #7c3aed; }
-        
-        .bg-yellow { background-color: #fefce8; border: 1px solid #fef08a; } 
-        .bg-yellow .num-highlight { color: #ca8a04; }
-        
-        /* 卡片右下角的隱形白光暈，增加質感 */
-        .feature-card-v2::after {
-            content: '';
-            position: absolute;
-            bottom: -40px;
-            right: -40px;
-            width: 180px;
-            height: 180px;
-            background: radial-gradient(circle, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 70%);
-            border-radius: 50%;
-            z-index: 0;
-            pointer-events: none;
-        }
-        .fc-icon, .feature-card-v2 h4, .feature-card-v2 p { position: relative; z-index: 1; }
     </style>
 </head>
 <body>
 
+    <!-- 網首 -->
     <header>
         <div class="header-content">
             <h1>115年合作推動地震資訊傳遞服務<br>成果交流會</h1>
@@ -559,21 +205,22 @@
     </header>
 
     <div class="container">
+        <!-- 頁籤按鈕 -->
         <div class="tabs">
             <button class="tab-btn active" onclick="openTab('info')">交流會資訊</button>
             <button class="tab-btn" onclick="openTab('agenda')">交流會議程</button>
             <button class="tab-btn" onclick="openTab('registration')">線上報名</button>
         </div>
 
-        <!-- 區塊一：交流會資訊 -->
+        <!-- ==========================================
+             區塊一：交流會資訊
+             ========================================== -->
         <div id="info" class="tab-content active">
             
-            <!-- 💡 標題靠左，拿掉握手圖示，地震波移至標題右側 -->
             <div style="display: flex; align-items: center; border-bottom: 2px solid #e0f2fe; padding-bottom: 10px; margin-bottom: 25px;">
                 <h2 style="margin: 0; font-size: 1.8em; color: #0284c7;">
                     推動地震資訊傳遞服務
                 </h2>
-                <!-- 動態地震波特效 (微調高度與左側間距以配合標題) -->
                 <div class="seismic-wave-container" style="height: 35px; margin-bottom: 0; margin-left: 15px;">
                     <div class="seismic-bar"></div><div class="seismic-bar"></div>
                     <div class="seismic-bar"></div><div class="seismic-bar"></div>
@@ -588,100 +235,57 @@
                 
                 <h3 style="color: #0c4a6e; margin-top: 35px; margin-bottom: 15px; font-size: 1.15em; border-left: 4px solid #f97316; padding-left: 10px;">推動成效與應用亮點：</h3>
                 
-                <!-- 💡 新版：蘋果風柔和彩卡網格區塊 -->
                 <div class="feature-grid-v2">
-                    
-                    <!-- 卡片 1 -->
                     <div class="feature-card-v2 bg-blue">
                         <div class="fc-icon">🎯</div>
                         <h4>精準快速的測報效能</h4>
                         <p>自 2014 年上線至 2025 年 12 月，已發布 <span class="num-highlight">272</span> 次警報。島內地震平均處理時效達 <span class="num-highlight">12.8</span> 秒（誤差 4.6 公里），外海地震亦可於 <span class="num-highlight">18.3</span> 秒內發布，提供極高的測報精準度。</p>
                     </div>
-                    
-                    <!-- 卡片 2 -->
                     <div class="feature-card-v2 bg-pink">
                         <div class="fc-icon">📡</div>
                         <h4>多元廣泛的訊息傳遞</h4>
                         <p>透過 PWS 及 <span class="num-highlight">13</span> 家電視臺插播給全國民眾（2024年電視插播達 77 次、PWS 75 次），亦透過網路直接傳送給約 <span class="num-highlight">4,300</span> 個公務部門、公共設施與中小學校園。</p>
                     </div>
-                    
-                    <!-- 卡片 3 -->
                     <div class="feature-card-v2 bg-orange">
                         <div class="fc-icon">🛡️</div>
                         <h4>跨域合作與客製化防護</h4>
                         <p>目前與 <span class="num-highlight">20</span> 個民間業者及個人開發者技術移轉合作。廣泛延伸至行動裝置 APP 及電梯、廣播等自動控制設備，客製化應用服務已觸及約 <span class="num-highlight">百萬</span> 名用戶。</p>
                     </div>
-                    
-                    <!-- 卡片 4 -->
                     <div class="feature-card-v2 bg-green">
                         <div class="fc-icon">🚀</div>
                         <h4>與時俱進的系統優化</h4>
                         <p>因應花蓮地震需求，新增「大規模地震增益門檻」：若規模達 <span class="num-highlight">6.5</span> 以上，預估震度 3 級即發布。同時優化更新機制，規模變動逾 <span class="num-highlight">0.1</span> 或震央變動 20 公里即刻更新。</p>
                     </div>
-
-                    <!-- 卡片 5 -->
                     <div class="feature-card-v2 bg-purple">
                         <div class="fc-icon">🏆</div>
                         <h4>實戰印證：高準確表現</h4>
                         <p>以 2025 年 12 月宜蘭外海地震為例，震後約 <span class="num-highlight">15.5</span> 秒即發警報，且全臺高達 <span class="num-highlight">88%</span> 的預估震度與實際觀測誤差在正負 1 級內，實證了系統的高度可靠性。</p>
                     </div>
-
-                    <!-- 卡片 6 -->
                     <div class="feature-card-v2 bg-yellow">
                         <div class="fc-icon">🌐</div>
                         <h4>三層次分工與未來展望</h4>
                         <p>建構了「氣象署、協力廠商、客製化運用」的完整防災生態系。未來將推動系統升級至全新的 <span class="num-highlight">eBEAR</span> 系統，持續提升預警的準確度與全臺覆蓋率。</p>
                     </div>
-
                 </div>
             </div>
 
-           <!-- 💡 交流會資訊：精緻黑板樣式 -->
-            <div class="blackboard-container">
-                
-                <!-- 💡 粉筆手繪質感的地震波 SVG -->
-                <!-- 💡 粉筆手繪質感的「真實地震波」 SVG -->
-                <!-- 💡 粉筆手繪質感的「擬真地震波」 SVG -->
-                <svg viewBox="0 0 300 80" style="width: 85%; max-width: 280px; height: auto; margin: 0 auto 15px auto; display: block; filter: drop-shadow(1px 1px 2px rgba(255,255,255,0.3));">
-                    <!-- 擬真波形：平靜 -> P波微震 -> 密集主震(S波) -> 尾波衰減 -> 平靜 -->
-                    <polyline points="
-                        0,40 60,40 
-                        65,39 68,43 72,34 75,47 78,35 81,42 85,39 
-                        90,41 
-                        95,25 97,60 99,12 101,72 103,5 105,75 107,10 109,68 111,20 114,58 117,28 120,52 
-                        124,33 129,48 134,35 140,44 147,37 155,42 165,39 177,41 190,40 
-                        300,40" 
-                        fill="none" stroke="#fdfaf6" stroke-width="2" stroke-linejoin="miter" stroke-linecap="round" opacity="0.85" />
-                </svg>
-
-                <h2 class="blackboard-title">交流會資訊</h2>
-                
-                <div class="blackboard-content">
-                    <div class="chalk-label">交流會日期：</div>
-                    <div class="chalk-text">115年 11月 24日 (週二) 14:00 - 17:00</div>
-                    
-                    <div class="chalk-label">交流會地點：</div>
-                    <div class="chalk-text">
-                        中央氣象署 3樓 310會議室<br>
-                        <span style="font-size: 0.85em; opacity: 0.85;">(臺北市中正區公園路64號)</span>
-                    </div>
-                    
-                    <div class="chalk-label">主辦單位：</div>
-                    <div class="chalk-text">交通部中央氣象署地震測報中心</div>
-                </div>
+            <!-- 💡 交流會資訊：直接載入玻璃白板圖片 -->
+            <div style="text-align: center; margin: 50px auto 30px; max-width: 800px; padding: 0 15px;">
+                <img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/Modern%20Glass%20Whiteboard.png" 
+                     alt="交流會資訊白板" 
+                     style="width: 100%; height: auto; border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.08); transition: transform 0.3s ease;"
+                     onmouseover="this.style.transform='scale(1.02)'" 
+                     onmouseout="this.style.transform='scale(1)'">
             </div>
-            <!-- 💡 照片牆輪播區塊 -->
+
+            <!-- 照片牆輪播區塊 -->
             <div class="gallery-container">
                 <h3 class="gallery-title">
                     <span style="background: #e0f2fe; padding: 8px; border-radius: 8px; font-size: 0.9em;">📸</span> 
                     精彩活動成果回顧
                 </h3>
-                
                 <div class="carousel-wrapper">
-                    <!-- 左箭頭 -->
                     <button class="carousel-btn" id="prevBtn">&#10094;</button>
-                    
-                    <!-- 輪播軌道 -->
                     <div class="carousel-track" id="photoTrack">
                         <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_3943 (小).JPG" alt="成果照片" loading="lazy"></div>
                         <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_3951 (小).JPG" alt="成果照片" loading="lazy"></div>
@@ -711,21 +315,19 @@
                         <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_9101 (小).JPG" alt="成果照片" loading="lazy"></div>
                         <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_9109 (小).JPG" alt="成果照片" loading="lazy"></div>
                     </div>
-                    
-                    <!-- 右箭頭 -->
                     <button class="carousel-btn" id="nextBtn">&#10095;</button>
                 </div>
             </div>
         </div>
 
-        <!-- 區塊二：交流會議程 (整合原有的詳細資訊) -->
+        <!-- ==========================================
+             區塊二：交流會議程
+             ========================================== -->
         <div id="agenda" class="tab-content">
-            <!-- 💡 標題與地震波對齊 -->
             <div style="display: flex; align-items: center; border-bottom: 2px solid #e0f2fe; padding-bottom: 10px; margin-bottom: 25px;">
                 <h2 style="margin: 0; font-size: 1.8em; color: #0284c7;">
                     交流會議程
                 </h2>
-                <!-- 動態地震波 -->
                 <div class="seismic-wave-container" style="height: 35px; margin-bottom: 0; margin-left: 15px;">
                     <div class="seismic-bar"></div><div class="seismic-bar"></div>
                     <div class="seismic-bar"></div><div class="seismic-bar"></div>
@@ -733,30 +335,20 @@
                     <div class="seismic-bar"></div>
                 </div>
             </div>
-           <!-- 新增：輕盈雲朵質感的時間與地點資訊區塊 -->
+            
             <div style="background: linear-gradient(120deg, #ffffff 0%, #f0f9ff 100%); border-radius: 16px; padding: 25px 20px; margin-bottom: 30px; box-shadow: 0 8px 25px rgba(2, 132, 199, 0.06), 0 2px 5px rgba(0,0,0,0.02); display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 30px; border: 1px solid #f1f5f9;">
-                
-                <!-- 日期區塊 -->
                 <div style="display: flex; align-items: center; justify-content: center; gap: 18px; flex: 1; min-width: 300px;">
-                    <!-- 柔和的 Icon 容器 -->
-                    <div style="background: #e0f2fe; width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.6em; flex-shrink: 0; color: #0284c7;">
-                        📅
-                    </div>
+                    <div style="background: #e0f2fe; width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.6em; flex-shrink: 0; color: #0284c7;">📅</div>
                     <div style="text-align: left;">
                         <div style="font-size: 0.85em; color: #64748b; font-weight: bold; letter-spacing: 2px;">EVENT DATE</div>
                         <div style="color: #0f172a; font-size: 1.15em; font-weight: bold; margin-top: 4px;">
                             115年 11月 24日 (二) 
-                            <!-- 輕量化的橘色時間標籤 -->
                             <div style="display: inline-block; color: #ea580c; background: #fff7ed; padding: 3px 12px; border-radius: 20px; margin-left: 6px; font-size: 0.85em; font-weight: bold; border: 1px solid #ffedd5; transform: translateY(-2px);">14:00 - 17:00</div>
                         </div>
                     </div>
                 </div>
-
-                <!-- 地點區塊 -->
                 <div style="display: flex; align-items: center; justify-content: center; gap: 18px; flex: 1; min-width: 300px;">
-                    <div style="background: #e0f2fe; width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.6em; flex-shrink: 0; color: #0284c7;">
-                        📍
-                    </div>
+                    <div style="background: #e0f2fe; width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.6em; flex-shrink: 0; color: #0284c7;">📍</div>
                     <div style="text-align: left;">
                         <div style="font-size: 0.85em; color: #64748b; font-weight: bold; letter-spacing: 2px;">EVENT LOCATION</div>
                         <div style="color: #0f172a; font-size: 1.15em; font-weight: bold; margin-top: 4px;">
@@ -764,8 +356,8 @@
                         </div>
                     </div>
                 </div>
-
             </div>
+
             <table class="agenda-table">
                 <thead>
                     <tr>
@@ -793,8 +385,6 @@
                         <td>13:50 ~ 13:55</td>
                         <td><strong>大合照 Group Photo</strong></td>
                     </tr>
-
-                    <!-- Section 1 -->
                     <tr>
                         <td colspan="2" class="section-header">13:55 ~ 14:00 ｜ Section 1 地震資訊傳遞服務成果展示 (主持人：蕭乃祺 副主任)</td>
                     </tr>
@@ -833,13 +423,10 @@
                             <span style="font-size: 0.95em; color: #64748b;">環輿科技股份有限公司 孫于力 副理</span>
                         </td>
                     </tr>
-
                     <tr>
                         <td>15:15 ~ 15:55</td>
                         <td><strong>交流時間 Coffee break</strong></td>
                     </tr>
-
-                    <!-- Section 2 -->
                     <tr>
                         <td colspan="2" class="section-header">15:55 ~ 16:00 ｜ Section 2 地震資訊傳遞服務成果展示 (主持人：許麗文 副主任)</td>
                     </tr>
@@ -871,7 +458,6 @@
                             <span style="font-size: 0.95em; color: #64748b;">瑞德感知科技股份有限公司 陳寶琳 董事長</span>
                         </td>
                     </tr>
-
                     <tr>
                         <td>17:00 ~</td>
                         <td><strong>交流會結束</strong></td>
@@ -880,13 +466,12 @@
             </table>
         </div>
 
+        <!-- ==========================================
+             區塊三：線上報名
+             ========================================== -->
         <div id="registration" class="tab-content">
-            <!-- 💡 標題與地震波對齊 -->
             <div style="display: flex; align-items: center; border-bottom: 2px solid #e0f2fe; padding-bottom: 10px; margin-bottom: 25px;">
-                <h2 style="margin: 0; font-size: 1.8em; color: #0284c7;">
-                    線上報名
-                </h2>
-                <!-- 動態地震波 -->
+                <h2 style="margin: 0; font-size: 1.8em; color: #0284c7;">線上報名</h2>
                 <div class="seismic-wave-container" style="height: 35px; margin-bottom: 0; margin-left: 15px;">
                     <div class="seismic-bar"></div><div class="seismic-bar"></div>
                     <div class="seismic-bar"></div><div class="seismic-bar"></div>
@@ -912,11 +497,9 @@
             <div id="step2" style="display:none; margin-top:25px;">
                 <hr style="margin-bottom:25px; border-top:1px dashed #cbd5e1;">
                 <div class="form-group">
-                    <!-- 閃爍的提示文字與箭頭 -->
                     <label style="color: #ea580c; font-size: 1.15em; font-weight: bold; animation: text-flash 1.2s infinite; display: inline-block;">
                         👇 請查看您的信箱，並在此輸入 6 位數驗證碼 *
                     </label>
-                    <!-- 套用閃爍特效、字體加大的輸入框 -->
                     <input type="text" id="verifyCode" class="input-flash" required placeholder="點此輸入驗證碼" style="letter-spacing: 5px; text-align: center; font-size: 1.5em; font-weight: bold; padding: 18px;">
                 </div>
                 <button type="button" id="checkCodeBtn" class="submit-btn" style="background-color: #0284c7;">確認驗證碼</button>
@@ -946,6 +529,7 @@
         </div>
     </div>
 
+    <!-- 頁尾 -->
     <footer>
         @交通部中央氣象署-地震測報中心<br>
         <span style="font-size: 0.8em; font-weight: normal; letter-spacing: 1px; opacity: 0.9; display: block; margin-top: 10px; line-height: 1.6;">
@@ -954,6 +538,7 @@
         </span>
     </footer>
 
+    <!-- 系統提示彈窗 -->
     <div id="customAlert" class="custom-alert-overlay">
         <div class="custom-alert-box">
             <h3>系統管理員 說：</h3>
@@ -962,7 +547,13 @@
         </div>
     </div>
 
+    <!-- ==========================================
+         JavaScript 功能區
+         ========================================== -->
     <script>
+        // ----------------------------------------
+        // 1. 頁籤切換與提示窗功能
+        // ----------------------------------------
         function openTab(tabId) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -975,6 +566,9 @@
             document.getElementById('customAlert').style.display = 'flex';
         }
 
+        // ----------------------------------------
+        // 2. 線上報名 API 串接與表單處理
+        // ----------------------------------------
         const GAS_WEB_APP_URL = 'https://script.google.com/macros/s/AKfycbwyFs9I2P3Wr03ui3zDcgB1HPeanB6DTJhe4zoQkO1fORHjwsefQ049jSC650kVu8Q7/exec'; 
 
         const notRobot = document.getElementById('notRobot');
@@ -983,6 +577,7 @@
         const checkCodeBtn = document.getElementById('checkCodeBtn');
         const verifyCodeInput = document.getElementById('verifyCode');
         
+        // 步驟一：發送驗證碼
         sendCodeBtn.addEventListener('click', () => {
             if (!notRobot.checked) { showCustomAlert('為了系統安全，請先勾選「我不是機器人」！'); return; }
             if(!verifyEmail.value.includes('@')) { showCustomAlert('請輸入有效的信箱格式！'); return; }
@@ -1008,6 +603,7 @@
             });
         });
 
+        // 步驟二：確認驗證碼
         checkCodeBtn.addEventListener('click', () => {
             if(!verifyCodeInput.value) { showCustomAlert('請輸入驗證碼！'); return; }
             
@@ -1032,6 +628,7 @@
             });
         });
 
+        // 步驟三：送出報名表單
         document.getElementById('registrationForm').addEventListener('submit', function(e) {
             e.preventDefault();
             const submitBtn = document.getElementById('submitFinalBtn');
@@ -1063,30 +660,31 @@
                 submitBtn.disabled = false; submitBtn.textContent = '確認送出報名';
             });
         });
-        // 💡 處理照片牆的自動輪播 (極致絲滑無縫無限迴圈版)
+
+        // ----------------------------------------
+        // 3. 照片牆自動輪播 (極致絲滑無縫無限迴圈版)
+        // ----------------------------------------
         document.addEventListener('DOMContentLoaded', function() {
             const track = document.getElementById('photoTrack');
             const nextBtn = document.getElementById('nextBtn');
             const prevBtn = document.getElementById('prevBtn');
             const wrapper = document.querySelector('.carousel-wrapper');
             
-            let isAnimating = false; // 防止狂按按鈕導致動畫錯亂
+            let isAnimating = false;
 
-            // 動態判斷當前螢幕「一頁顯示幾張照片」
             function getItemsPerPage() {
                 if (window.innerWidth <= 768) return 2;
                 if (window.innerWidth <= 1024) return 3;
                 return 4;
             }
 
-            // 取得精準的滑動距離 (單張寬度 + 20px的間距) * 幾張
             function getScrollAmount(itemsPerPage) {
                 const photoItem = track.querySelector('.photo-item');
                 if (!photoItem) return 0;
                 return (photoItem.offsetWidth + 20) * itemsPerPage;
             }
 
-            // ➡️ 往右滑 (下一頁)
+            // 往右滑 (下一頁)
             function slideNext() {
                 if (isAnimating) return;
                 isAnimating = true;
@@ -1094,28 +692,21 @@
                 const itemsPerPage = getItemsPerPage();
                 const moveAmount = getScrollAmount(itemsPerPage);
 
-                // 1. 開啟絲滑動畫，並往左推移
                 track.style.transition = 'transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)';
                 track.style.transform = `translateX(-${moveAmount}px)`;
 
-                // 2. 等 0.8秒 動畫播完後，在背景偷偷動手腳
                 setTimeout(() => {
-                    // 關閉動畫
                     track.style.transition = 'none';
-                    // 把剛剛滑過去的照片，搬到隊伍最尾端
                     for (let i = 0; i < itemsPerPage; i++) {
                         track.appendChild(track.firstElementChild);
                     }
-                    // 軌道瞬間歸位 (肉眼看不出來)
                     track.style.transform = 'translateX(0)';
-                    
-                    // 強制瀏覽器重繪
                     track.offsetHeight;
                     isAnimating = false;
                 }, 800);
             }
 
-            // ⬅️ 往左滑 (上一頁)
+            // 往左滑 (上一頁)
             function slidePrev() {
                 if (isAnimating) return;
                 isAnimating = true;
@@ -1123,21 +714,13 @@
                 const itemsPerPage = getItemsPerPage();
                 const moveAmount = getScrollAmount(itemsPerPage);
 
-                // 1. 先關閉動畫
                 track.style.transition = 'none';
-                
-                // 2. 偷偷把隊伍最後面的照片，搬到最前面
                 for (let i = 0; i < itemsPerPage; i++) {
                     track.insertBefore(track.lastElementChild, track.firstElementChild);
                 }
-                
-                // 3. 把軌道往左邊拉 (這時候畫面看起來像是沒變)
                 track.style.transform = `translateX(-${moveAmount}px)`;
-                
-                // 4. 強制瀏覽器重繪
                 track.offsetHeight;
 
-                // 5. 開啟動畫，並把軌道滑回原位 0，產生往左滑的視覺
                 track.style.transition = 'transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)';
                 track.style.transform = 'translateX(0)';
 
@@ -1146,16 +729,13 @@
                 }, 800);
             }
 
-            // 綁定左右按鈕
             if (nextBtn && prevBtn) {
                 nextBtn.addEventListener('click', slideNext);
                 prevBtn.addEventListener('click', slidePrev);
             }
 
-            // 設定自動輪播 (每 4.5 秒自動換一整頁)
             let autoScrollInterval = setInterval(slideNext, 4500);
 
-            // 滑鼠懸停暫停輪播，離開恢復
             if (wrapper) {
                 wrapper.addEventListener('mouseenter', () => clearInterval(autoScrollInterval));
                 wrapper.addEventListener('mouseleave', () => autoScrollInterval = setInterval(slideNext, 4500));
