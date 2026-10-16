@@ -951,15 +951,16 @@
                 submitBtn.disabled = false; submitBtn.textContent = '確認送出報名';
             });
         });
-        // 💡 處理照片牆的自動輪播與左右按鈕切換
+        // 💡 處理照片牆的自動輪播與左右按鈕切換 (滑絲感整頁切換版)
         document.addEventListener('DOMContentLoaded', function() {
             const track = document.getElementById('photoTrack');
             const nextBtn = document.getElementById('nextBtn');
             const prevBtn = document.getElementById('prevBtn');
             const wrapper = document.querySelector('.carousel-wrapper');
             
-            // 計算每次滑動的距離 (一張照片的寬度 + 間距)
-            const getScrollAmount = () => track.querySelector('.photo-item').offsetWidth + 20;
+            // 🌟 關鍵修改：每次滑動「整個軌道的可視寬度」
+            // 這會超級聰明：電腦版自動滑 4 張、平板滑 3 張、手機滑 2 張！
+            const getScrollAmount = () => track.clientWidth;
 
             // 左右按鈕點擊事件
             if (nextBtn && prevBtn) {
@@ -971,11 +972,11 @@
                 });
             }
 
-            // 設定自動輪播 (每 3 秒自動往右滑動)
-            let autoScrollInterval = setInterval(autoScroll, 3000);
+            // 🌟 自動輪播時間延長：因為一次換 4 張，改為 4.5 秒換一次，讓使用者有足夠時間看
+            let autoScrollInterval = setInterval(autoScroll, 4500);
 
             function autoScroll() {
-                // 如果滑到了最右邊，就自動跳回第一張
+                // 如果滑到了最右邊，就流暢地滑回第一張
                 if (track.scrollLeft + track.clientWidth >= track.scrollWidth - 10) {
                     track.scrollTo({ left: 0, behavior: 'smooth' });
                 } else {
@@ -986,7 +987,7 @@
             // 貼心設計：當滑鼠移到照片上時，暫停自動輪播，移開時再恢復
             if (wrapper) {
                 wrapper.addEventListener('mouseenter', () => clearInterval(autoScrollInterval));
-                wrapper.addEventListener('mouseleave', () => autoScrollInterval = setInterval(autoScroll, 3000));
+                wrapper.addEventListener('mouseleave', () => autoScrollInterval = setInterval(autoScroll, 4500));
             }
         });
     </script>
