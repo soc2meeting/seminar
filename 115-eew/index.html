@@ -450,6 +450,103 @@
             .carousel-wrapper { padding: 0; }
             .carousel-btn { display: none; }
         }
+        /* 💡 新版：蘋果風柔和彩卡 (Apple Soft Bento Style) */
+        .feature-grid-v2 {
+            display: grid;
+            /* 自動分配欄位，螢幕夠寬就放 3 欄，不夠就 2 欄或 1 欄 */
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 25px;
+            margin-top: 35px;
+        }
+        
+        .feature-card-v2 {
+            border-radius: 24px; /* 蘋果風大圓角 */
+            padding: 35px 30px;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.4s ease;
+            display: flex;
+            flex-direction: column;
+            border: none;
+            text-align: left; /* 移除左右強制對齊的僵硬感，讓文字自然呼吸 */
+        }
+        
+        .feature-card-v2:hover {
+            transform: translateY(-8px) scale(1.01);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.06);
+        }
+        
+        /* 懸浮白底水晶 Icon */
+        .fc-icon {
+            background: rgba(255, 255, 255, 0.9);
+            width: 65px;
+            height: 65px;
+            border-radius: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            margin-bottom: 25px;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.04);
+        }
+        
+        .feature-card-v2 h4 {
+            margin: 0 0 12px 0;
+            font-size: 1.3em;
+            font-weight: 900;
+            color: #0f172a;
+            letter-spacing: 0.5px;
+        }
+        
+        .feature-card-v2 p {
+            margin: 0;
+            font-size: 1.05em;
+            color: #334155;
+            line-height: 1.8;
+            opacity: 0.95;
+        }
+        
+        /* 🌟 關鍵：強調數據的字體，打破文字牆 */
+        .num-highlight {
+            font-size: 1.35em;
+            font-weight: 900;
+            font-family: 'Arial', sans-serif;
+            margin: 0 3px;
+        }
+
+        /* 賦予六張卡片專屬的柔和背景色與對應的數字強調色 */
+        .bg-blue { background-color: #f0f9ff; } 
+        .bg-blue .num-highlight { color: #0284c7; }
+        
+        .bg-pink { background-color: #fdf2f8; } 
+        .bg-pink .num-highlight { color: #db2777; }
+        
+        .bg-orange { background-color: #fff7ed; } 
+        .bg-orange .num-highlight { color: #ea580c; }
+        
+        .bg-green { background-color: #ecfdf5; } 
+        .bg-green .num-highlight { color: #059669; }
+        
+        .bg-purple { background-color: #faf5ff; } 
+        .bg-purple .num-highlight { color: #7c3aed; }
+        
+        .bg-yellow { background-color: #fefce8; border: 1px solid #fef08a; } 
+        .bg-yellow .num-highlight { color: #ca8a04; }
+        
+        /* 卡片右下角的隱形白光暈，增加質感 */
+        .feature-card-v2::after {
+            content: '';
+            position: absolute;
+            bottom: -40px;
+            right: -40px;
+            width: 180px;
+            height: 180px;
+            background: radial-gradient(circle, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 70%);
+            border-radius: 50%;
+            z-index: 0;
+            pointer-events: none;
+        }
+        .fc-icon, .feature-card-v2 h4, .feature-card-v2 p { position: relative; z-index: 1; }
     </style>
 </head>
 <body>
@@ -491,43 +588,51 @@
                 
                 <h3 style="color: #0c4a6e; margin-top: 35px; margin-bottom: 15px; font-size: 1.15em; border-left: 4px solid #f97316; padding-left: 10px;">推動成效與應用亮點：</h3>
                 
-                <!-- 💡 卡片網格區塊 (擴充為 6 張卡片) -->
-                <div class="feature-grid">
+                <!-- 💡 新版：蘋果風柔和彩卡網格區塊 -->
+                <div class="feature-grid-v2">
+                    
                     <!-- 卡片 1 -->
-                    <div class="feature-card">
-                        <h4>🎯 精準快速的測報效能</h4>
-                        <p>本系統自 2014 年上線至 2025 年 12 月，已發布 272 次警報。島內地震平均處理時效達 12.8 秒（震央誤差僅 4.6 公里），外海地震亦可於 18.3 秒內發布（震央誤差 13.3 公里），提供極高的測報精準度。</p>
+                    <div class="feature-card-v2 bg-blue">
+                        <div class="fc-icon">🎯</div>
+                        <h4>精準快速的測報效能</h4>
+                        <p>自 2014 年上線至 2025 年 12 月，已發布 <span class="num-highlight">272</span> 次警報。島內地震平均處理時效達 <span class="num-highlight">12.8</span> 秒（誤差 4.6 公里），外海地震亦可於 <span class="num-highlight">18.3</span> 秒內發布，提供極高的測報精準度。</p>
                     </div>
                     
                     <!-- 卡片 2 -->
-                    <div class="feature-card">
-                        <h4>📡 多元廣泛的訊息傳遞</h4>
-                        <p>警報除透過災防告警系統 (PWS) 及 13 家電視臺即時插播給全國民眾（2024年電視插播達77次、PWS達75次），亦透過網路直接傳送給約 4,300 個公務部門、公共設施與中小學校園，鞏固防震基礎建設。</p>
+                    <div class="feature-card-v2 bg-pink">
+                        <div class="fc-icon">📡</div>
+                        <h4>多元廣泛的訊息傳遞</h4>
+                        <p>透過 PWS 及 <span class="num-highlight">13</span> 家電視臺插播給全國民眾（2024年電視插播達 77 次、PWS 75 次），亦透過網路直接傳送給約 <span class="num-highlight">4,300</span> 個公務部門、公共設施與中小學校園。</p>
                     </div>
                     
                     <!-- 卡片 3 -->
-                    <div class="feature-card" style="border-top-color: var(--accent-orange);">
-                        <h4>🛡️ 跨域合作與客製化防護</h4>
-                        <p>目前與 20 個民間業者及個人開發者簽署技術移轉合作。藉由中介傳遞介接，廣泛延伸至行動裝置 APP 警報器及電梯、廣播等自動控制設備，相關客製化應用服務已觸及約百萬名用戶。</p>
+                    <div class="feature-card-v2 bg-orange">
+                        <div class="fc-icon">🛡️</div>
+                        <h4>跨域合作與客製化防護</h4>
+                        <p>目前與 <span class="num-highlight">20</span> 個民間業者及個人開發者技術移轉合作。廣泛延伸至行動裝置 APP 及電梯、廣播等自動控制設備，客製化應用服務已觸及約 <span class="num-highlight">百萬</span> 名用戶。</p>
                     </div>
                     
                     <!-- 卡片 4 -->
-                    <div class="feature-card" style="border-top-color: var(--accent-orange);">
-                        <h4>🚀 與時俱進的系統優化</h4>
-                        <p>因應 0403 花蓮地震需求，系統新增「大規模地震增益門檻」：若規模達 6.5 以上，預估震度 3 級地區即發布警報。同時優化更新機制（規模變動逾 0.1 或震央變動 20 公里即刻更新），確保警報涵蓋更迅速完善。</p>
+                    <div class="feature-card-v2 bg-green">
+                        <div class="fc-icon">🚀</div>
+                        <h4>與時俱進的系統優化</h4>
+                        <p>因應花蓮地震需求，新增「大規模地震增益門檻」：若規模達 <span class="num-highlight">6.5</span> 以上，預估震度 3 級即發布。同時優化更新機制，規模變動逾 <span class="num-highlight">0.1</span> 或震央變動 20 公里即刻更新。</p>
                     </div>
 
-                    <!-- 卡片 5 (新增：實戰印證) -->
-                    <div class="feature-card" style="border-top-color: #10b981;">
-                        <h4>🏆 實戰印證：高準確度表現</h4>
-                        <p>以 2025 年 12 月 27 日宜蘭外海地震為例，系統於震後約 15.5 秒即發送警報，且全臺高達 88% 的預估震度與實際觀測震度差距在正負 1 級以內，實證了系統在啟動防災應變機制上的高度可靠性。</p>
+                    <!-- 卡片 5 -->
+                    <div class="feature-card-v2 bg-purple">
+                        <div class="fc-icon">🏆</div>
+                        <h4>實戰印證：高準確表現</h4>
+                        <p>以 2025 年 12 月宜蘭外海地震為例，震後約 <span class="num-highlight">15.5</span> 秒即發警報，且全臺高達 <span class="num-highlight">88%</span> 的預估震度與實際觀測誤差在正負 1 級內，實證了系統的高度可靠性。</p>
                     </div>
 
-                    <!-- 卡片 6 (新增：架構與未來展望) -->
-                    <div class="feature-card" style="border-top-color: #10b981;">
-                        <h4>🌐 三層次分工與未來展望</h4>
-                        <p>建構了「上游觀測與測報(氣象署)、中游資訊傳遞(協力廠商)、下游客製化運用」的完整防災生態系。未來更將推動現行系統升級至全新的「eBEAR 系統」，持續提升預警系統的準確度與全臺覆蓋率。</p>
+                    <!-- 卡片 6 -->
+                    <div class="feature-card-v2 bg-yellow">
+                        <div class="fc-icon">🌐</div>
+                        <h4>三層次分工與未來展望</h4>
+                        <p>建構了「氣象署、協力廠商、客製化運用」的完整防災生態系。未來將推動系統升級至全新的 <span class="num-highlight">eBEAR</span> 系統，持續提升預警的準確度與全臺覆蓋率。</p>
                     </div>
+
                 </div>
             </div>
 
