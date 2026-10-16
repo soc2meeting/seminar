@@ -23,11 +23,6 @@
             margin: 0; padding: 0; 
             color: var(--text-main); 
             background-color: var(--bg-color); 
-            
-            /* 💡 加入純 CSS 科技點格背景 */
-            background-image: radial-gradient(rgba(148, 163, 184, 0.35) 1.5px, transparent 1.5px);
-            background-size: 24px 24px; /* 控制點與點之間的間隔距離 */
-            
             line-height: 1.6; 
             display: flex; flex-direction: column; 
             min-height: 100vh; 
@@ -88,7 +83,19 @@
         .tab-btn:hover { background-color: var(--light-blue); }
         .tab-btn.active { background-color: var(--primary-blue); color: white; border-color: var(--primary-blue); box-shadow: 0 4px 10px rgba(2, 132, 199, 0.2); }
 
-        .tab-content { display: none; background: var(--card-bg); padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05); border-top: 4px solid var(--primary-blue); }
+        .tab-content { 
+            display: none; 
+            background-color: var(--card-bg); 
+            
+            /* 💡 將點格背景移到主要的白色內容卡片上 */
+            background-image: radial-gradient(rgba(148, 163, 184, 0.3) 1.5px, transparent 1.5px);
+            background-size: 24px 24px;
+            
+            padding: 40px; 
+            border-radius: 12px; 
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05); 
+            border-top: 4px solid var(--primary-blue); 
+        }
         .tab-content.active { display: block; animation: fadeIn 0.4s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
