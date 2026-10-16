@@ -946,72 +946,103 @@
                 submitBtn.disabled = false; submitBtn.textContent = '確認送出報名';
             });
         });
-        // 💡 處理照片牆的自動輪播與左右按鈕切換 (滑絲感整頁切換版)
-        // 💡 處理照片牆的自動輪播與絲滑整頁轉場
+        // 💡 處理照片牆的自動輪播 (極致絲滑無縫無限迴圈版)
         document.addEventListener('DOMContentLoaded', function() {
             const track = document.getElementById('photoTrack');
             const nextBtn = document.getElementById('nextBtn');
             const prevBtn = document.getElementById('prevBtn');
             const wrapper = document.querySelector('.carousel-wrapper');
             
-            let currentPage = 0;
-            
-            function updateSlide() {
-                if (!track) return;
-                // 取得單張照片的實際寬度 + 20px 的間距
-                const photoItem = track.querySelector('.photo-item');
-                if (!photoItem) return;
-                const itemWidth = photoItem.offsetWidth + 20;
-                
-                // 動態判斷當前螢幕「一頁顯示幾張照片」
-                let itemsPerPage = 4; 
-                if (window.innerWidth <= 1024) itemsPerPage = 3;
-                if (window.innerWidth <= 768) itemsPerPage = 2;
-                
-                // 計算總頁數，防呆處理
-                const totalItems = track.querySelectorAll('.photo-item').length;
-                const maxPage = Math.ceil(totalItems / itemsPerPage) - 1;
-                
-                if (currentPage > maxPage) currentPage = 0; // 滑到底回第一頁
-                if (currentPage < 0) currentPage = maxPage;
-                
-                // 🌟 使用 CSS transform 進行絲滑轉場 (計算要移動的精準像素)
-                const moveX = currentPage * (itemWidth * itemsPerPage);
-                track.style.transform = `translateX(-${moveX}px)`;
+            let isAnimating = false; // 防止狂按按鈕導致動畫錯亂
+
+            // 動態判斷當前螢幕「一頁顯示幾張照片」
+            function getItemsPerPage() {
+                if (window.innerWidth <= 768) return 2;
+                if (window.innerWidth <= 1024) return 3;
+                return 4;
             }
 
-            // 按鈕點擊切換整頁
+            // 取得精準的滑動距離 (單張寬度 + 20px的間距) * 幾張
+            function getScrollAmount(itemsPerPage) {
+                const photoItem = track.querySelector('.photo-item');
+                if (!photoItem) return 0;
+                return (photoItem.offsetWidth + 20) * itemsPerPage;
+            }
+
+            // ➡️ 往右滑 (下一頁)
+            function slideNext() {
+                if (isAnimating) return;
+                isAnimating = true;
+
+                const itemsPerPage = getItemsPerPage();
+                const moveAmount = getScrollAmount(itemsPerPage);
+
+                // 1. 開啟絲滑動畫，並往左推移
+                track.style.transition = 'transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)';
+                track.style.transform = `translateX(-${moveAmount}px)`;
+
+                // 2. 等 0.8秒 動畫播完後，在背景偷偷動手腳
+                setTimeout(() => {
+                    // 關閉動畫
+                    track.style.transition = 'none';
+                    // 把剛剛滑過去的照片，搬到隊伍最尾端
+                    for (let i = 0; i < itemsPerPage; i++) {
+                        track.appendChild(track.firstElementChild);
+                    }
+                    // 軌道瞬間歸位 (肉眼看不出來)
+                    track.style.transform = 'translateX(0)';
+                    
+                    // 強制瀏覽器重繪
+                    track.offsetHeight;
+                    isAnimating = false;
+                }, 800);
+            }
+
+            // ⬅️ 往左滑 (上一頁)
+            function slidePrev() {
+                if (isAnimating) return;
+                isAnimating = true;
+
+                const itemsPerPage = getItemsPerPage();
+                const moveAmount = getScrollAmount(itemsPerPage);
+
+                // 1. 先關閉動畫
+                track.style.transition = 'none';
+                
+                // 2. 偷偷把隊伍最後面的照片，搬到最前面
+                for (let i = 0; i < itemsPerPage; i++) {
+                    track.insertBefore(track.lastElementChild, track.firstElementChild);
+                }
+                
+                // 3. 把軌道往左邊拉 (這時候畫面看起來像是沒變)
+                track.style.transform = `translateX(-${moveAmount}px)`;
+                
+                // 4. 強制瀏覽器重繪
+                track.offsetHeight;
+
+                // 5. 開啟動畫，並把軌道滑回原位 0，產生往左滑的視覺
+                track.style.transition = 'transform 0.8s cubic-bezier(0.25, 1, 0.5, 1)';
+                track.style.transform = 'translateX(0)';
+
+                setTimeout(() => {
+                    isAnimating = false;
+                }, 800);
+            }
+
+            // 綁定左右按鈕
             if (nextBtn && prevBtn) {
-                nextBtn.addEventListener('click', () => {
-                    currentPage++;
-                    updateSlide();
-                });
-                prevBtn.addEventListener('click', () => {
-                    currentPage--;
-                    updateSlide();
-                });
+                nextBtn.addEventListener('click', slideNext);
+                prevBtn.addEventListener('click', slidePrev);
             }
 
             // 設定自動輪播 (每 4.5 秒自動換一整頁)
-            let autoScrollInterval = setInterval(() => {
-                currentPage++;
-                updateSlide();
-            }, 4500);
+            let autoScrollInterval = setInterval(slideNext, 4500);
 
-            // 滑鼠懸停暫停輪播
+            // 滑鼠懸停暫停輪播，離開恢復
             if (wrapper) {
                 wrapper.addEventListener('mouseenter', () => clearInterval(autoScrollInterval));
-                wrapper.addEventListener('mouseleave', () => autoScrollInterval = setInterval(() => {
-                    currentPage++;
-                    updateSlide();
-                }, 4500));
+                wrapper.addEventListener('mouseleave', () => autoScrollInterval = setInterval(slideNext, 4500));
             }
-
-            // 當視窗大小改變時，重新歸零避免畫面卡在一半
-            window.addEventListener('resize', () => {
-                currentPage = 0;
-                updateSlide();
-            });
         });
     </script>
 </body>
