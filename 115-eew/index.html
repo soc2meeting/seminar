@@ -355,6 +355,7 @@
         /* 💡 科技感相片牆專屬樣式 */
         /* 💡 科技感相片牆 - 橫向雙排滑動版 (Netflix 風格) */
         /* 💡 科技感相片牆 - 單排自動輪播版 */
+        /* 💡 科技感相片牆 - 絲滑整頁轉場版 */
         .gallery-container {
             margin-top: 50px;
             padding-top: 35px;
@@ -373,32 +374,26 @@
             position: relative;
             display: flex;
             align-items: center;
-            padding: 0 45px; /* 留給左右按鈕的空間 */
+            padding: 0 45px;
+            /* 🌟 關鍵：隱藏軌道兩側超出的照片，讓畫面保持乾淨 */
+            overflow: hidden; 
         }
         .carousel-track {
             display: flex;
             gap: 20px;
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            scroll-snap-type: x mandatory;
-            /* 隱藏原生捲軸 */
-            -ms-overflow-style: none; 
-            scrollbar-width: none; 
-            padding: 15px 0; /* 預留上下發光空間 */
-        }
-        .carousel-track::-webkit-scrollbar {
-            display: none; 
+            padding: 15px 0;
+            width: 100%;
+            /* 🌟 關鍵：關閉原生捲軸，改用 cubic-bezier 設定極致絲滑的轉場曲線 */
+            transition: transform 0.8s cubic-bezier(0.25, 1, 0.5, 1);
         }
         .photo-item {
-            /* 電腦版顯示 4 張 */
             flex: 0 0 calc((100% - 60px) / 4); 
-            scroll-snap-align: start;
             position: relative;
             border-radius: 12px;
             overflow: hidden;
             aspect-ratio: 4 / 3;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.4s ease;
             cursor: pointer;
             background-color: #f8fafc; 
         }
@@ -446,14 +441,14 @@
         #prevBtn { left: 0; }
         #nextBtn { right: 0; }
 
-        /* 響應式：平板 3 張，手機 2 張 */
+        /* 響應式 */
         @media (max-width: 1024px) {
             .photo-item { flex: 0 0 calc((100% - 40px) / 3); }
         }
         @media (max-width: 768px) {
             .photo-item { flex: 0 0 calc((100% - 20px) / 2); }
-            .carousel-wrapper { padding: 0; } /* 手機隱藏兩側空間 */
-            .carousel-btn { display: none; } /* 手機隱藏箭頭，直接用手滑 */
+            .carousel-wrapper { padding: 0; }
+            .carousel-btn { display: none; }
         }
     </style>
 </head>
@@ -952,43 +947,71 @@
             });
         });
         // 💡 處理照片牆的自動輪播與左右按鈕切換 (滑絲感整頁切換版)
+        // 💡 處理照片牆的自動輪播與絲滑整頁轉場
         document.addEventListener('DOMContentLoaded', function() {
             const track = document.getElementById('photoTrack');
             const nextBtn = document.getElementById('nextBtn');
             const prevBtn = document.getElementById('prevBtn');
             const wrapper = document.querySelector('.carousel-wrapper');
             
-            // 🌟 關鍵修改：每次滑動「整個軌道的可視寬度」
-            // 這會超級聰明：電腦版自動滑 4 張、平板滑 3 張、手機滑 2 張！
-            const getScrollAmount = () => track.clientWidth;
+            let currentPage = 0;
+            
+            function updateSlide() {
+                if (!track) return;
+                // 取得單張照片的實際寬度 + 20px 的間距
+                const photoItem = track.querySelector('.photo-item');
+                if (!photoItem) return;
+                const itemWidth = photoItem.offsetWidth + 20;
+                
+                // 動態判斷當前螢幕「一頁顯示幾張照片」
+                let itemsPerPage = 4; 
+                if (window.innerWidth <= 1024) itemsPerPage = 3;
+                if (window.innerWidth <= 768) itemsPerPage = 2;
+                
+                // 計算總頁數，防呆處理
+                const totalItems = track.querySelectorAll('.photo-item').length;
+                const maxPage = Math.ceil(totalItems / itemsPerPage) - 1;
+                
+                if (currentPage > maxPage) currentPage = 0; // 滑到底回第一頁
+                if (currentPage < 0) currentPage = maxPage;
+                
+                // 🌟 使用 CSS transform 進行絲滑轉場 (計算要移動的精準像素)
+                const moveX = currentPage * (itemWidth * itemsPerPage);
+                track.style.transform = `translateX(-${moveX}px)`;
+            }
 
-            // 左右按鈕點擊事件
+            // 按鈕點擊切換整頁
             if (nextBtn && prevBtn) {
                 nextBtn.addEventListener('click', () => {
-                    track.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
+                    currentPage++;
+                    updateSlide();
                 });
                 prevBtn.addEventListener('click', () => {
-                    track.scrollBy({ left: -getScrollAmount(), behavior: 'smooth' });
+                    currentPage--;
+                    updateSlide();
                 });
             }
 
-            // 🌟 自動輪播時間延長：因為一次換 4 張，改為 4.5 秒換一次，讓使用者有足夠時間看
-            let autoScrollInterval = setInterval(autoScroll, 4500);
+            // 設定自動輪播 (每 4.5 秒自動換一整頁)
+            let autoScrollInterval = setInterval(() => {
+                currentPage++;
+                updateSlide();
+            }, 4500);
 
-            function autoScroll() {
-                // 如果滑到了最右邊，就流暢地滑回第一張
-                if (track.scrollLeft + track.clientWidth >= track.scrollWidth - 10) {
-                    track.scrollTo({ left: 0, behavior: 'smooth' });
-                } else {
-                    track.scrollBy({ left: getScrollAmount(), behavior: 'smooth' });
-                }
-            }
-
-            // 貼心設計：當滑鼠移到照片上時，暫停自動輪播，移開時再恢復
+            // 滑鼠懸停暫停輪播
             if (wrapper) {
                 wrapper.addEventListener('mouseenter', () => clearInterval(autoScrollInterval));
-                wrapper.addEventListener('mouseleave', () => autoScrollInterval = setInterval(autoScroll, 4500));
+                wrapper.addEventListener('mouseleave', () => autoScrollInterval = setInterval(() => {
+                    currentPage++;
+                    updateSlide();
+                }, 4500));
             }
+
+            // 當視窗大小改變時，重新歸零避免畫面卡在一半
+            window.addEventListener('resize', () => {
+                currentPage = 0;
+                updateSlide();
+            });
         });
     </script>
 </body>
