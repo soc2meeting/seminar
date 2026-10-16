@@ -354,6 +354,7 @@
         }
         /* 💡 科技感相片牆專屬樣式 */
         /* 💡 科技感相片牆 - 橫向雙排滑動版 (Netflix 風格) */
+        /* 💡 科技感相片牆 - 單排自動輪播版 */
         .gallery-container {
             margin-top: 50px;
             padding-top: 35px;
@@ -362,64 +363,41 @@
         .gallery-title {
             color: #0c4a6e;
             font-size: 1.6em;
-            margin-bottom: 10px; /* 縮小與下方提示的間距 */
+            margin-bottom: 25px;
             display: flex;
             align-items: center;
             gap: 12px;
             font-weight: bold;
         }
-        .gallery-hint {
-            color: #64748b;
-            font-size: 0.95em;
-            margin-bottom: 20px;
+        .carousel-wrapper {
+            position: relative;
             display: flex;
             align-items: center;
-            gap: 8px;
+            padding: 0 45px; /* 留給左右按鈕的空間 */
         }
-
-        /* 改為橫向滑動網格 */
-        .photo-grid {
-            display: grid;
-            /* 固定為兩排 */
-            grid-template-rows: repeat(2, 1fr);
-            /* 照片改由上至下、左至右排列 */
-            grid-auto-flow: column;
-            /* 固定每張照片寬度，讓右側露出半張圖暗示可以滑動 */
-            grid-auto-columns: 240px; 
-            gap: 18px;
-            /* 開啟橫向捲動 */
+        .carousel-track {
+            display: flex;
+            gap: 20px;
             overflow-x: auto;
-            overflow-y: hidden;
-            /* 上下左右預留空間，避免照片發光放大時被截斷 */
-            padding: 15px 10px 25px 10px; 
             scroll-behavior: smooth;
+            scroll-snap-type: x mandatory;
+            /* 隱藏原生捲軸 */
+            -ms-overflow-style: none; 
+            scrollbar-width: none; 
+            padding: 15px 0; /* 預留上下發光空間 */
         }
-        
-        /* 美化電腦版的橫向捲軸，讓它有科技感 */
-        .photo-grid::-webkit-scrollbar {
-            height: 10px;
+        .carousel-track::-webkit-scrollbar {
+            display: none; 
         }
-        .photo-grid::-webkit-scrollbar-track {
-            background: #f1f5f9;
-            border-radius: 8px;
-        }
-        .photo-grid::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 8px;
-            border: 2px solid #f1f5f9;
-        }
-        .photo-grid::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-
-        /* 單張照片維持發光放大特效 */
         .photo-item {
+            /* 電腦版顯示 4 張 */
+            flex: 0 0 calc((100% - 60px) / 4); 
+            scroll-snap-align: start;
             position: relative;
             border-radius: 12px;
             overflow: hidden;
             aspect-ratio: 4 / 3;
             box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border: 2px solid transparent; 
             transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             cursor: pointer;
             background-color: #f8fafc; 
@@ -432,12 +410,50 @@
         }
         .photo-item:hover {
             transform: translateY(-8px); 
-            border-color: #0ea5e9; 
             box-shadow: 0 15px 30px rgba(2, 132, 199, 0.25), 0 0 15px rgba(14, 165, 233, 0.3); 
             z-index: 10;
         }
         .photo-item:hover img {
             transform: scale(1.08); 
+        }
+        
+        /* 左右切換按鈕 */
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #ffffff;
+            border: 2px solid #e2e8f0;
+            border-radius: 50%;
+            width: 44px;
+            height: 44px;
+            font-size: 1.4em;
+            color: #0284c7;
+            cursor: pointer;
+            z-index: 20;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.3s;
+        }
+        .carousel-btn:hover {
+            background: #0284c7;
+            color: white;
+            border-color: #0284c7;
+            box-shadow: 0 6px 15px rgba(2, 132, 199, 0.3);
+        }
+        #prevBtn { left: 0; }
+        #nextBtn { right: 0; }
+
+        /* 響應式：平板 3 張，手機 2 張 */
+        @media (max-width: 1024px) {
+            .photo-item { flex: 0 0 calc((100% - 40px) / 3); }
+        }
+        @media (max-width: 768px) {
+            .photo-item { flex: 0 0 calc((100% - 20px) / 2); }
+            .carousel-wrapper { padding: 0; } /* 手機隱藏兩側空間 */
+            .carousel-btn { display: none; } /* 手機隱藏箭頭，直接用手滑 */
         }
     </style>
 </head>
@@ -542,55 +558,50 @@
                     <div class="chalk-text">交通部中央氣象署地震測報中心</div>
                 </div>
             </div>
-            <!-- 💡 照片牆區塊 -->
-            <div class="gallery-container">
-                <h3 class="gallery-title">
-                    <span style="background: #e0f2fe; padding: 8px; border-radius: 8px; font-size: 0.9em;">📸</span> 
-                    精彩活動成果回顧
-                </h3>
-                <!-- 💡 照片牆區塊 -->
+            <!-- 💡 照片牆輪播區塊 -->
             <div class="gallery-container">
                 <h3 class="gallery-title">
                     <span style="background: #e0f2fe; padding: 8px; border-radius: 8px; font-size: 0.9em;">📸</span> 
                     精彩活動成果回顧
                 </h3>
                 
-                <!-- 新增這個左右滑動的小提示 -->
-                <div class="gallery-hint">
-                    <span>✨</span> 左右滑動即可查看更多活動照片 👉
-                </div>
-                
-                <div class="photo-grid">
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_3943 (小).JPG" alt="成果照片" loading="lazy"></div>
-                    <!-- ... 您的其他照片不動 ... -->
-                <div class="photo-grid">
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_3943 (小).JPG" alt="成果照片" loading="lazy"></div>
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_3951 (小).JPG" alt="成果照片" loading="lazy"></div>
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_3952 (小).JPG" alt="成果照片" loading="lazy"></div>
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_3954 (小).JPG" alt="成果照片" loading="lazy"></div>
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_3955 (小).JPG" alt="成果照片" loading="lazy"></div>
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6293 (小).JPG" alt="成果照片" loading="lazy"></div>
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6300 (小).JPG" alt="成果照片" loading="lazy"></div>
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6304 (小).JPG" alt="成果照片" loading="lazy"></div>
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6395 (小).JPG" alt="成果照片" loading="lazy"></div>
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6442 (小).JPG" alt="成果照片" loading="lazy"></div>
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6457 (小).JPG" alt="成果照片" loading="lazy"></div>
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6458 (小).JPG" alt="成果照片" loading="lazy"></div>
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6462 (小).JPG" alt="成果照片" loading="lazy"></div>
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6479 (小).JPG" alt="成果照片" loading="lazy"></div>
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6487 (小).JPG" alt="成果照片" loading="lazy"></div>
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8810 (小).JPG" alt="成果照片" loading="lazy"></div>
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8812 (小).JPG" alt="成果照片" loading="lazy"></div>
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8852 (小).JPG" alt="成果照片" loading="lazy"></div>
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8854 (小).JPG" alt="成果照片" loading="lazy"></div>
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8872 (小).JPG" alt="成果照片" loading="lazy"></div>
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8897 (小).JPG" alt="成果照片" loading="lazy"></div>
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8911 (小).JPG" alt="成果照片" loading="lazy"></div>
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8939 (小).JPG" alt="成果照片" loading="lazy"></div>
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8973 (小).JPG" alt="成果照片" loading="lazy"></div>
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8988 (小).JPG" alt="成果照片" loading="lazy"></div>
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_9101 (小).JPG" alt="成果照片" loading="lazy"></div>
-                    <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_9109 (小).JPG" alt="成果照片" loading="lazy"></div>
+                <div class="carousel-wrapper">
+                    <!-- 左箭頭 -->
+                    <button class="carousel-btn" id="prevBtn">&#10094;</button>
+                    
+                    <!-- 輪播軌道 -->
+                    <div class="carousel-track" id="photoTrack">
+                        <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_3943 (小).JPG" alt="成果照片" loading="lazy"></div>
+                        <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_3951 (小).JPG" alt="成果照片" loading="lazy"></div>
+                        <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_3952 (小).JPG" alt="成果照片" loading="lazy"></div>
+                        <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_3954 (小).JPG" alt="成果照片" loading="lazy"></div>
+                        <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_3955 (小).JPG" alt="成果照片" loading="lazy"></div>
+                        <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6293 (小).JPG" alt="成果照片" loading="lazy"></div>
+                        <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6300 (小).JPG" alt="成果照片" loading="lazy"></div>
+                        <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6304 (小).JPG" alt="成果照片" loading="lazy"></div>
+                        <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6395 (小).JPG" alt="成果照片" loading="lazy"></div>
+                        <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6442 (小).JPG" alt="成果照片" loading="lazy"></div>
+                        <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6457 (小).JPG" alt="成果照片" loading="lazy"></div>
+                        <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6458 (小).JPG" alt="成果照片" loading="lazy"></div>
+                        <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6462 (小).JPG" alt="成果照片" loading="lazy"></div>
+                        <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6479 (小).JPG" alt="成果照片" loading="lazy"></div>
+                        <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_6487 (小).JPG" alt="成果照片" loading="lazy"></div>
+                        <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8810 (小).JPG" alt="成果照片" loading="lazy"></div>
+                        <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8812 (小).JPG" alt="成果照片" loading="lazy"></div>
+                        <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8852 (小).JPG" alt="成果照片" loading="lazy"></div>
+                        <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8854 (小).JPG" alt="成果照片" loading="lazy"></div>
+                        <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8872 (小).JPG" alt="成果照片" loading="lazy"></div>
+                        <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8897 (小).JPG" alt="成果照片" loading="lazy"></div>
+                        <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8911 (小).JPG" alt="成果照片" loading="lazy"></div>
+                        <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8939 (小).JPG" alt="成果照片" loading="lazy"></div>
+                        <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8973 (小).JPG" alt="成果照片" loading="lazy"></div>
+                        <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_8988 (小).JPG" alt="成果照片" loading="lazy"></div>
+                        <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_9101 (小).JPG" alt="成果照片" loading="lazy"></div>
+                        <div class="photo-item"><img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/IMG_9109 (小).JPG" alt="成果照片" loading="lazy"></div>
+                    </div>
+                    
+                    <!-- 右箭頭 -->
+                    <button class="carousel-btn" id="nextBtn">&#10095;</button>
                 </div>
             </div>
         </div>
