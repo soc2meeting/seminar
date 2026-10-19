@@ -293,13 +293,24 @@
                 </div>
             </div>
 
-            <!-- 💡 交流會資訊：直接載入玻璃白板圖片 -->
-            <div style="text-align: center; margin: 50px auto 30px; max-width: 800px; padding: 0 15px;">
+            <!-- 💡 交流會資訊：直接載入玻璃白板圖片 (加入報告書下載按鈕) -->
+            <div style="text-align: center; margin: 50px auto 30px; max-width: 800px; padding: 0 15px; position: relative;">
                 <img src="https://scweb.cwa.gov.tw/webdata/PDF/115EEW/Modern%20Glass%20Whiteboard.png" 
                      alt="交流會資訊白板" 
                      style="width: 100%; height: auto; border-radius: 16px; box-shadow: 0 15px 35px rgba(0,0,0,0.08); transition: transform 0.3s ease;"
                      onmouseover="this.style.transform='scale(1.02)'" 
                      onmouseout="this.style.transform='scale(1)'">
+                     
+                <!-- 白板下方的懸浮下載按鈕 -->
+                <div style="text-align: right; margin-top: 15px; padding-right: 10px;">
+                    <a href="https://scweb.cwa.gov.tw/webdata/PDF/115%E5%B9%B4%E5%90%88%E4%BD%9C%E6%8E%A8%E5%8B%95%E5%9C%B0%E9%9C%87%E8%B3%87%E8%A8%8A%E5%82%B3%E9%81%9E%E6%9C%8D%E5%8B%99%E6%88%90%E6%9E%9C%E4%BA%A4%E6%B5%81%E6%9C%83_%E6%88%90%E6%9E%9C%E5%A0%B1%E5%91%8A%E6%9B%B8.pdf" 
+                       target="_blank" 
+                       style="display: inline-flex; align-items: center; gap: 8px; background: linear-gradient(135deg, #0284c7, #0369a1); color: white; padding: 10px 24px; border-radius: 30px; text-decoration: none; font-weight: bold; font-size: 1.05em; box-shadow: 0 4px 15px rgba(2,132,199,0.3); transition: all 0.3s;"
+                       onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 20px rgba(2,132,199,0.4)';" 
+                       onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(2,132,199,0.3)';">
+                        <span style="font-size: 1.2em;">📥</span> 115成果報告書下載
+                    </a>
+                </div>
             </div>
 
             <!-- 照片牆輪播區塊 -->
@@ -361,7 +372,9 @@
             </div>
             
             <div style="background: linear-gradient(120deg, #ffffff 0%, #f0f9ff 100%); border-radius: 16px; padding: 25px 20px; margin-bottom: 30px; box-shadow: 0 8px 25px rgba(2, 132, 199, 0.06), 0 2px 5px rgba(0,0,0,0.02); display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 30px; border: 1px solid #f1f5f9;">
-                <div style="display: flex; align-items: center; justify-content: center; gap: 18px; flex: 1; min-width: 300px;">
+                
+                <!-- 日期區塊 -->
+                <div style="display: flex; align-items: center; justify-content: center; gap: 18px; flex: 1; min-width: 250px;">
                     <div style="background: #e0f2fe; width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.6em; flex-shrink: 0; color: #0284c7;">📅</div>
                     <div style="text-align: left;">
                         <div style="font-size: 0.85em; color: #64748b; font-weight: bold; letter-spacing: 2px;">EVENT DATE</div>
@@ -371,7 +384,9 @@
                         </div>
                     </div>
                 </div>
-                <div style="display: flex; align-items: center; justify-content: center; gap: 18px; flex: 1; min-width: 300px;">
+                
+                <!-- 地點區塊 -->
+                <div style="display: flex; align-items: center; justify-content: center; gap: 18px; flex: 1; min-width: 220px;">
                     <div style="background: #e0f2fe; width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.6em; flex-shrink: 0; color: #0284c7;">📍</div>
                     <div style="text-align: left;">
                         <div style="font-size: 0.85em; color: #64748b; font-weight: bold; letter-spacing: 2px;">EVENT LOCATION</div>
@@ -380,6 +395,18 @@
                         </div>
                     </div>
                 </div>
+
+                <!-- 💡 新增：下載按鈕區塊 -->
+                <div style="display: flex; align-items: center; justify-content: center; flex: 1; min-width: 220px;">
+                    <a href="https://scweb.cwa.gov.tw/webdata/PDF/115%E5%B9%B4%E5%90%88%E4%BD%9C%E6%8E%A8%E5%8B%95%E5%9C%B0%E9%9C%87%E8%B3%87%E8%A8%8A%E5%82%B3%E9%81%9E%E6%9C%8D%E5%8B%99%E6%88%90%E6%9E%9C%E4%BA%A4%E6%B5%81%E6%9C%83_%E6%88%90%E6%9E%9C%E5%A0%B1%E5%91%8A%E6%9B%B8.pdf" 
+                       target="_blank" 
+                       style="display: flex; align-items: center; justify-content: center; gap: 10px; background: linear-gradient(135deg, #ea580c, #c2410c); color: white; padding: 14px 20px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 1.1em; width: 100%; box-shadow: 0 4px 15px rgba(234, 88, 12, 0.25); transition: all 0.3s;"
+                       onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 20px rgba(234, 88, 12, 0.35)';" 
+                       onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(234, 88, 12, 0.25)';">
+                        <span style="font-size: 1.3em;">📥</span> 115成果報告書
+                    </a>
+                </div>
+                
             </div>
 
             <table class="agenda-table">
