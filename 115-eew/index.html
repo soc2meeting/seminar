@@ -42,7 +42,7 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            padding: 170px 20px;
+            padding: 160px 20px;
             text-align: center; 
             border-bottom: 4px solid var(--primary-blue); 
             box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); 
@@ -136,10 +136,14 @@
             font-size: 1.05em; 
             color: #334155; 
             line-height: 1.8; 
-            letter-spacing: 0px !important; /* 💡 強制字距歸零，拒絕被拉寬 */
-            text-align: left !important; /* 💡 改回靠左對齊，避免瀏覽器硬扯開字距 */
+            
+            /* 💡 終極修正：鎖死所有間距與對齊方式 */
+            text-align: left !important;       /* 絕對靠左，嚴禁瀏覽器自動拉寬 */
+            letter-spacing: normal !important; /* 恢復正常字距 */
+            word-spacing: normal !important;   /* 嚴格禁止數字與中文字之間的空白被撐大 */
+            white-space: normal !important;    /* 正常換行 */
+            
             opacity: 0.95; 
-            word-break: break-word; /* 💡 確保中英文自然換行不破版 */
         }
         
         /* 🌟 數據字體微調 */
