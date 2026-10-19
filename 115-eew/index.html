@@ -396,16 +396,26 @@
                     </div>
                 </div>
 
-                <!-- 💡 新增：下載按鈕區塊 -->
-                <div style="display: flex; align-items: center; justify-content: center; flex: 1; min-width: 220px;">
-                    <a href="https://scweb.cwa.gov.tw/webdata/PDF/115%E5%B9%B4%E5%90%88%E4%BD%9C%E6%8E%A8%E5%8B%95%E5%9C%B0%E9%9C%87%E8%B3%87%E8%A8%8A%E5%82%B3%E9%81%9E%E6%9C%8D%E5%8B%99%E6%88%90%E6%9E%9C%E4%BA%A4%E6%B5%81%E6%9C%83_%E6%88%90%E6%9E%9C%E5%A0%B1%E5%91%8A%E6%9B%B8.pdf" 
-                       target="_blank" 
-                       style="display: flex; align-items: center; justify-content: center; gap: 10px; background: linear-gradient(135deg, #ea580c, #c2410c); color: white; padding: 14px 20px; border-radius: 12px; text-decoration: none; font-weight: bold; font-size: 1.1em; width: 100%; box-shadow: 0 4px 15px rgba(234, 88, 12, 0.25); transition: all 0.3s;"
-                       onmouseover="this.style.transform='translateY(-3px)'; this.style.boxShadow='0 8px 20px rgba(234, 88, 12, 0.35)';" 
-                       onmouseout="this.style.transform='translateY(0)'; this.style.boxShadow='0 4px 15px rgba(234, 88, 12, 0.25)';">
-                        <span style="font-size: 1.3em;">📥</span> 115成果報告書
-                    </a>
-                </div>
+                <!-- 💡 修改：下載按鈕區塊 (與時間地點同風格) -->
+                <a href="https://scweb.cwa.gov.tw/webdata/PDF/115%E5%B9%B4%E5%90%88%E4%BD%9C%E6%8E%A8%E5%8B%95%E5%9C%B0%E9%9C%87%E8%B3%87%E8%A8%8A%E5%82%B3%E9%81%9E%E6%9C%8D%E5%8B%99%E6%88%90%E6%9E%9C%E4%BA%A4%E6%B5%81%E6%9C%83_%E6%88%90%E6%9E%9C%E5%A0%B1%E5%91%8A%E6%9B%B8.pdf" 
+                   target="_blank"
+                   style="display: flex; align-items: center; justify-content: center; gap: 18px; flex: 1; min-width: 250px; text-decoration: none; padding: 10px; border-radius: 16px; transition: all 0.3s; cursor: pointer;"
+                   onmouseover="this.style.backgroundColor='#f8fafc'; this.style.transform='translateY(-2px)';" 
+                   onmouseout="this.style.backgroundColor='transparent'; this.style.transform='translateY(0)';">
+                    
+                    <!-- 柔和的 Icon 容器 (採用淺橘色系暗示下載動作) -->
+                    <div style="background: #fff7ed; width: 56px; height: 56px; border-radius: 16px; display: flex; align-items: center; justify-content: center; font-size: 1.6em; flex-shrink: 0; color: #ea580c; border: 1px solid #ffedd5;">
+                        📥
+                    </div>
+                    <div style="text-align: left;">
+                        <div style="font-size: 0.85em; color: #64748b; font-weight: bold; letter-spacing: 2px;">DOWNLOAD</div>
+                        <div style="color: #0f172a; font-size: 1.15em; font-weight: bold; margin-top: 4px;">
+                            115成果報告書
+                            <!-- 加上 PDF 小標籤維持排版平衡 -->
+                            <div style="display: inline-block; color: #0284c7; background: #e0f2fe; padding: 3px 12px; border-radius: 20px; margin-left: 6px; font-size: 0.85em; font-weight: bold; border: 1px solid #bae6fd; transform: translateY(-2px);">PDF</div>
+                        </div>
+                    </div>
+                </a>
                 
             </div>
 
